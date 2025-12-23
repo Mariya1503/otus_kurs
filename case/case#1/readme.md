@@ -1,506 +1,336 @@
-Лабораторная работа. Базовая настройка коммутатора 
+#  IPv4/v6
 
-Топология
- 
-Таблица адресации
-Устройство	Интерфейс	IP-адрес / префикс
-S1	VLAN 1	192.168.1.2 /24
-S1	VLAN 99	
-S1	VLAN 99	
-PC-A	NIC	192.168.1.10 /24
-PC-A	NIC	
-PC-A	NIC	
-Задачи
-Часть 1. Проверка конфигурации коммутатора по умолчанию
-Часть 2. Создание сети и настройка основных параметров устройства
-•	Настройте базовые параметры коммутатора.
-•	Настройте IP-адрес для ПК.
-Часть 3. Проверка сетевых подключений
-•	Отобразите конфигурацию устройства.
-•	Протестируйте сквозное соединение, отправив эхо-запрос.
-•	Протестируйте возможности удаленного управления с помощью Telnet.
-Общие сведения/сценарий
-На коммутаторах Cisco можно настроить особый IP-адрес, который называют виртуальным интерфейсом коммутатора (SVI). SVI или адрес управления можно использовать для удаленного доступа к коммутатору в целях отображения или настройки параметров. Если для SVI сети VLAN 1 назначен IP-адрес, то по умолчанию все порты в сети VLAN 1 имеют доступ к IP-адресу управления SVI. 
-В ходе данной лабораторной работы вам предстоит построить простую топологию, используя Ethernet-кабель локальной сети, и получить доступ к коммутатору Cisco, используя консольное подключение и методы удаленного доступа.
-Примечание. В лабораторной работе используются коммутаторы Cisco Catalyst 2960s с операционной системой Cisco IOS 15.2(2) (образ lanbasek9). Допускается использование других моделей коммутаторов и других версий Cisco IOS. В зависимости от модели устройства и версии Cisco IOS доступные команды и результаты их выполнения могут отличаться от тех, которые показаны в лабораторных работах. 
-Необходимые ресурсы
-•	1 коммутатор (Cisco 2960 с ПО Cisco IOS версии 15.2(2) с образом lanbasek9 или аналогичная модель)
-•	1 ПК (под управлением Windows с программой эмуляции терминала, например, Tera Term)
-•	1 консольный кабель для настройки устройства на базе Cisco IOS через консольный порт.
-•	1 кабель Ethernet, как показано в топологии.
-Часть 1. Создание сети и проверка настроек коммутатора по умолчанию
-В первой части лабораторной работы вам предстоит настроить топологию сети и проверить настройку коммутатора по умолчанию.
-Шаг 1. Создайте сеть согласно топологии.
-a.	Подсоедините консольный кабель, как показано в топологии. На данном этапе не подключайте кабель Ethernet компьютера PC-A.
-b.	Установите консольное подключение к коммутатору с компьютера PC-A с помощью Tera Term или другой программы эмуляции терминала.
-Вопрос:
-Почему нужно использовать консольное подключение для первоначальной настройки коммутатора?
-- данный метод подключения позволяет получить доступ к устройству даже без настройки сетевых сервисов
-Почему нельзя подключиться к коммутатору через Telnet или SSH?
-- В отличие от консольного подключения для SSH или Telnet -подключений на устройстве должны быть активны сетевые службы, включая активный интерфейс с настроенным адресом.
+###  Задание:
 
-Шаг 2. Проверьте настройки коммутатора по умолчанию.
-На данном этапе вам нужно проверить такие параметры коммутатора по умолчанию, как текущие настройки коммутатора, данные IOS, свойства интерфейса, сведения о VLAN и флеш-память.
-К привилегированному набору команд относятся команды пользовательского режима, а также команда configure, при помощи которой выполняется доступ к остальным командным режимам. Введите команду enable, чтобы войти в привилегированный режим EXEC.
-
-a.	Предположим, что коммутатор не имеет файла конфигурации, сохраненного в энергонезависимой памяти (NVRAM). Консольное подключение к коммутатору с помощью Tera Term или другой программы эмуляции терминала предоставит доступ к командной строке пользовательского режима EXEC в виде Switch>. Введите команду enable, чтобы войти в привилегированный режим EXEC.
-Откройте окно конфигурации
-Обратите внимание, что измененная в конфигурации строка будет отражать привилегированный режим EXEC.
-
-На коммутаторе находится пустой файл конфигурации по умолчанию.
-b.	Изучите текущий файл running configuration.
-Switch#sh running-config
-Building configuration...
-Current configuration : 1080 bytes
-!
-version 15.0
-no service timestamps log datetime msec
-no service timestamps debug datetime msec
-no service password-encryption
-!
-hostname Switch
-!
-!
-!
-!
-!
-!
-spanning-tree mode pvst
-spanning-tree extend system-id
-!
-interface FastEthernet0/1
-!
-interface FastEthernet0/2
-!
-interface FastEthernet0/3
-!
-interface FastEthernet0/4
-!
-interface FastEthernet0/5
-!
-interface FastEthernet0/6
-!
-interface FastEthernet0/7
-!
-interface FastEthernet0/8
-!
-interface FastEthernet0/9
-!
-interface FastEthernet0/10
-!
-interface FastEthernet0/11
-!
-interface FastEthernet0/12
-!
-interface FastEthernet0/13
-!
-interface FastEthernet0/14
-!
-interface FastEthernet0/15
-!
-interface FastEthernet0/16
-!
-interface FastEthernet0/17
-!
-interface FastEthernet0/18
-!
-interface FastEthernet0/19
-!
-interface FastEthernet0/20
-!
-interface FastEthernet0/21
-!
-interface FastEthernet0/22
-!
-interface FastEthernet0/23
-!
-interface FastEthernet0/24
-!
-interface GigabitEthernet0/1
-!
-interface GigabitEthernet0/2
-!
-interface Vlan1
-no ip address
-shutdown
-!
-!
-!
-!
-line con 0
-!
-line vty 0 4
-login
-line vty 5 15
-login
-!
-!
-!
-!
-end
-Switch#
-Вопросы:
-Сколько интерфейсов FastEthernet имеется на коммутаторе 2960? - 24
-Сколько интерфейсов Gigabit Ethernet имеется на коммутаторе 2960? - 2
-Каков диапазон значений, отображаемых в vty-линиях? - 0-15
-c.	Изучите файл загрузочной конфигурации (startup configuration), который содержится в энергонезависимом ОЗУ (NVRAM).
-Почему появляется это сообщение?
-Файл загрузочной конфигурации отображает конфигурацию, которая будет применена на устройстве после перезагрузки. 
-d.	Изучите характеристики SVI для VLAN 1.сы:interface Vlan1
-
-Назначен ли IP-адрес сети VLAN 1? — нет
-Switch# show mac address-table
-Mac Address Table
--------------------------------------------
-Vlan Mac Address Type Ports
----- ----------- -------- -----
-Какой MAC-адрес имеет SVI? Возможны различные варианты ответов.
-Данный интерфейс включен? - отключен
-e.	Изучите IP-свойства интерфейса SVI сети VLAN 1.
-Вопрос:
-Какие выходные данные вы видите? – статус, порты, размер MTU
-f.	Подсоедините кабель Ethernet компьютера PC-A к порту 6 на коммутаторе и изучите IP-свойства интерфейса SVI сети VLAN 1. Дождитесь согласования параметров скорости и дуплекса между коммутатором и ПК.
+  1. Разработать и задокументировать адресное пространство;
+  2. Настроить IP адреса на каждом активном порту;
+  3. Использовать IPv4 и IPv6;
+  4. Задокументировать все изменения.
 
 
-Какие выходные данные вы видите?
 
-g.	Изучите сведения о версии ОС Cisco IOS на коммутаторе.
-Вопросы:
+###  Решение:
 
-Под управлением какой версии ОС Cisco IOS работает коммутатор? - Version 15.0(2)SE4
-Как называется файл образа системы? - System image file is "flash:c2960-lanbasek9-mz.150-2.SE4.bin"
-h.	Изучите свойства по умолчанию интерфейса FastEthernet, который используется компьютером PC-A.
-Switch# show interface f0/6
+  1. [Задокументируем используемое адресное пространство с использованием IPv4 и IPv6;](README.md#1-%D0%B7%D0%B0%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D1%83%D0%B5%D0%BC-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D0%BC%D0%BE%D0%B5-%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%BD%D0%BE%D0%B5-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%BE-%D1%81-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%D0%BC-ipv4-%D0%B8-ipv6)
+  2. [Задокументируем выделенные для маршрутизаторов IP-адреса;](README.md#2-%D0%B7%D0%B0%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D1%83%D0%B5%D0%BC-%D0%B2%D1%8B%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80%D0%BE%D0%B2-ip-%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0)
+  3. [Настроим IP-адреса с учетом приведённой выше схемы и задокументируем изменения:](README.md#3-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B8%D0%BC-ip-%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0-%D1%81-%D1%83%D1%87%D0%B5%D1%82%D0%BE%D0%BC-%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D0%B4%D1%91%D0%BD%D0%BD%D0%BE%D0%B9-%D0%B2%D1%8B%D1%88%D0%B5-%D1%81%D1%85%D0%B5%D0%BC%D1%8B-%D0%B8-%D0%B7%D0%B0%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D1%83%D0%B5%D0%BC-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F)
+     - [Пример настройки на маршрутизаторе R1;](README.md#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B8-%D0%BD%D0%B0-%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80%D0%B5-r1)
+     - [Конфигурационные файлы;](configs/)
+     - [Итоговая графическая схема.](README.md#%D0%B8%D1%82%D0%BE%D0%B3%D0%BE%D0%B2%D0%B0%D1%8F-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D1%81%D1%85%D0%B5%D0%BC%D0%B0)
 
-Вопрос:
-Интерфейс включен или выключен? - включен
-Что нужно сделать, чтобы включить интерфейс?
-Какой MAC-адрес у интерфейса?
-Какие настройки скорости и дуплекса заданы в интерфейсе?
-i.	Изучите флеш-память.
-Выполните одну из следующих команд, чтобы изучить содержимое флеш-каталога.
-Switch# show flash 
-Switch# dir flash: 
-В конце имени файла указано расширение, например .bin. Каталоги не имеют расширения файла.
-Switch# show flash
-Directory of flash:/
-
-1 -rw- 4670455 <no date> 2960-lanbasek9-mz.150-2.SE4.bin
-
-64016384 bytes total (59345929 bytes free)
-
-Вопрос:
-Какое имя присвоено образу Cisco IOS? - 2960-lanbasek9-mz.150-2.SE4
-Часть 2. Настройка базовых параметров сетевых устройств
-Во второй части необходимо будет настроить основные параметры коммутатора и компьютера.
-Шаг 1. Настройте базовые параметры коммутатора.
-a.	В режиме глобальной конфигурации скопируйте следующие базовые параметры конфигурации и вставьте их в файл на коммутаторе S1. 
-no ip domain-lookup
-hostname S1
-service password-encryption
-enable secret class
-banner motd # Unauthorized access is strictly prohibited. #
-b.	Назначьте IP-адрес интерфейсу SVI на коммутаторе. Благодаря этому вы получите возможность удаленного управления коммутатором.
-Прежде чем вы сможете управлять коммутатором S1 удаленно с компьютера PC-A, коммутатору нужно назначить IP-адрес. Согласно конфигурации по умолчанию коммутатором можно управлять через VLAN 1.
-c.	Доступ через порт консоли также следует ограничить  с помощью пароля. Используйте cisco в качестве пароля для входа в консоль в этом задании. Конфигурация по умолчанию разрешает все консольные подключения без пароля. Чтобы консольные сообщения не прерывали выполнение команд, используйте параметр logging synchronous.
-S1(config)# line con 0
-S1(config-line)# logging synchronous 
-d.	Настройте каналы виртуального соединения для удаленного управления (vty), чтобы коммутатор разрешил доступ через Telnet. Если не настроить пароль VTY, будет невозможно подключиться к коммутатору по протоколу Telnet.
-Вопрос:
-Для чего нужна команда login? — команда требует ввода пароля при подключении по консоли
- Введите ваш ответ здесь.
-йте окно настройки.
-Шаг 2. Настройте IP-адрес на компьютере PC-A.
-Назначьте компьютеру IP-адрес и маску подсети в соответствии с таблицей адресации.
-1)	Перейдите в Панель управления. (Control Panel)
-2)	В представлении «Категория» выберите « Просмотр состояния сети и задач».
-3)	Щелкните Изменение параметров адаптера на левой панели.
-4)	Щелкните правой кнопкой мыши интерфейс Ethernet и выберите «Свойства» .
-5)	Выберите Протокол Интернета версии 4 (TCP/IPv4) > Свойства.
-6)	Выберите Использовать следующий IP-адрес и введите IP-адрес и маску подсети  и нажмите ОК.
-Часть 3. Проверка сетевых подключений
-В третьей части лабораторной работы вам предстоит проверить и задокументировать конфигурацию коммутатора, протестировать сквозное соединение между компьютером PC-A и коммутатором S1, а также протестировать возможность удаленного управления коммутатором.
-Шаг 1. Отобразите конфигурацию коммутатора.
-a.	Используйте консольное подключение на компьютере PC-A для отображения и проверки конфигурации коммутатора. Команда show run позволяет постранично отобразить всю текущую конфигурацию. Для пролистывания используйте клавишу пробела.
-S1#sh run
-Building configuration...
-
-Current configuration : 1318 bytes
-!
-version 15.0
-no service timestamps log datetime msec
-no service timestamps debug datetime msec
-service password-encryption
-!
-hostname S1
-!
-enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
-!
-!
-!
-no ip domain-lookup
-!
-!
-!
-spanning-tree mode pvst
-spanning-tree extend system-id
-!
-interface FastEthernet0/1
-!
-interface FastEthernet0/2
-!
-interface FastEthernet0/3
-!
-interface FastEthernet0/4
-!
-interface FastEthernet0/5
-!
-interface FastEthernet0/6
-!
-interface FastEthernet0/7
-!
-interface FastEthernet0/8
-!
-interface FastEthernet0/9
-!
-interface FastEthernet0/10
-!
-interface FastEthernet0/11
-!
-interface FastEthernet0/12
-!
-interface FastEthernet0/13
-!
-interface FastEthernet0/14
-!
-interface FastEthernet0/15
-!
-interface FastEthernet0/16
-!
-interface FastEthernet0/17
-!
-interface FastEthernet0/18
-!
-interface FastEthernet0/19
-!
-interface FastEthernet0/20
-!
-interface FastEthernet0/21
-!
-interface FastEthernet0/22
-!
-interface FastEthernet0/23
-!
-interface FastEthernet0/24
-!
-interface GigabitEthernet0/1
-!
-interface GigabitEthernet0/2
-!
-interface Vlan1
-ip address 192.168.1.2 255.255.255.0
-!
-banner motd ^C Unauthorized access is strictly prohibited. ^C
-!
-!
-!
-line con 0
-password 7 0822455D0A16
-logging synchronous
-login
-!
-line vty 0 4
-password 7 0822455D0A16
-login
-line vty 5 15
-password 7 0822455D0A16
-login
-!
-!
-!
-!
-end
+###  1. Задокументируем используемое адресное пространство с использованием IPv4 и IPv6.
 
 
-b.	Проверьте параметры VLAN 1.
-S1# show interface vlan 1
-S1#show interface vlan 1
-Vlan1 is up, line protocol is up
-Hardware is CPU Interface, address is 00e0.b051.4598 (bia 00e0.b051.4598)
-Internet address is 192.168.1.2/24
-MTU 1500 bytes, BW 100000 Kbit, DLY 1000000 usec,
-reliability 255/255, txload 1/255, rxload 1/255
-Encapsulation ARPA, loopback not set
-ARP type: ARPA, ARP Timeout 04:00:00
-Last input 21:40:21, output never, output hang never
-Last clearing of "show interface" counters never
-Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
-Queueing strategy: fifo
-Output queue: 0/40 (size/max)
-5 minute input rate 0 bits/sec, 0 packets/sec
-5 minute output rate 0 bits/sec, 0 packets/sec
-1682 packets input, 530955 bytes, 0 no buffer
-Received 0 broadcasts (0 IP multicast)
-0 runts, 0 giants, 0 throttles
-0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
-563859 packets output, 0 bytes, 0 underruns
-0 output errors, 23 interface resets
-0 output buffer failures, 0 output buffers swapped out
+  Общая таблица сетей.
 
-Какова полоса пропускания этого интерфейса? - MTU 1500 bytes
-Закройте окно настройки.
-Шаг 2. Протестируйте сквозное соединение, отправив эхо-запрос.
-a.	В командной строке компьютера PC-A с помощью утилиты ping проверьте связь сначала с адресом PC-A.
-C:\> ping 192.168.1.10
+| Network IPv4     | Summary net    | Network IPv6             | Summary net         | Description   | Eq&port         |
+|-----------------:|:---------------|-------------------------:|:--------------------|:-------------:|-----------------|
+| 90.90.128.0/24   | 90.90.128.0/22 | 20FF:CCFF:FFFF:1::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R17e0/1 R18e0/1 |
+| 90.90.129.0/24   | 90.90.128.0/22 | 20FF:CCFF:FFFF:2::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R17e0/2 R19e0/2 |
+| 90.90.130.0/25   | 90.90.128.0/22 | 20FF:CCFF:FFFF:3::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R18e0/2 R20e0/2 |
+| 90.90.130.128/25 | 90.90.128.0/22 | 20FF:CCFF:FFFF:4::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R19e0/1 R20e0/1 |
+| 90.90.131.0/25   | 90.90.128.0/22 | 20FF:CCFF:FFFF:5::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R17e0/3 R20e0/3 |
+| 90.90.131.128/25 | 90.90.128.0/22 | 20FF:CCFF:FFFF:6::/64    | 20FF:CCFF:FFFF::/48 | ISP network   | R18e0/3 R19e0/3 |
+| 172.16.17.0/30   | not used       | 20FF:CCFF:1000:17::/64   | not used            | to Internet   | R5e0/0  R17e0/0 |
+| 172.16.18.0/29   | not used       | 20FF:CCFF:1000:18::/64   | not used            | to Internet   | R9e0/0  R18e0/0 |
+| 172.16.19.0/30   | not used       | 20FF:CCFF:1000:19::/64   | not used            | to Internet   | R1e0/0  R19e0/0 |
+| 172.16.20.0/30   | not used       | 20FF:CCFF:1000:20::/64   | not used            | to Internet   | R13e0/0 R20e0/0 |
+| 50.50.96.0/23    | 50.50.96.0/21  | 20FF:CCFF:200A:A1::/64   | 20FF:CCFF:200A::/48 | Трум-пум      | R9e0/1  R12e0/1 |
+| 50.50.98.0/23    | 50.50.96.0/21  | 20FF:CCFF:200A:A2::/64   | 20FF:CCFF:200A::/48 | Трум-пум      | R11e0/0 R12e0/0 |
+| 50.50.100.0/24   | 50.50.96.0/21  | 20FF:CCFF:200A:A3::/64   | 20FF:CCFF:200A::/48 | Трум-пум      | R9e0/2  R10e0/2 |
+| 50.50.101.0/24   | 50.50.96.0/21  | 20FF:CCFF:200A:A4::/64   | 20FF:CCFF:200A::/48 | Трум-пум      | R10e0/1 R11e0/1 |
+| 50.50.102.8/29   | 50.50.96.0/21  | 20FF:CCFF:200A:A5::/64   | 20FF:CCFF:200A::/48 | Трум-пум      | R9e0/3  R11e0/3 |
+| 50.50.104.0/24   | 50.50.104.0/23 | 20FF:CCFF:200B:A1::/64   | 20FF:CCFF:200B::/48 | Трам-пам      | R5e0/2  R7e0/2  |
+| 50.50.105.0/25   | 50.50.104.0/23 | 20FF:CCFF:200B:A2::/64   | 20FF:CCFF:200B::/48 | Трам-пам      | R5e0/1  R6e0/1  |
+| 50.50.105.128/25 | 50.50.104.0/23 | 20FF:CCFF:200B:A3::/64   | 20FF:CCFF:200B::/48 | Трам-пам      | R6e0/0  R7e0/0  |
+| 35.10.0.0/21     | 35.10.0.0/18   | 20FF:CCFF:200C:A1::/64   | 20FF:CCFF:200C::/48 | Трым-пым A0   | R1e0/2  R3e0/2  |
+| 35.10.8.0/23     | 35.10.0.0/18   | 20FF:CCFF:200C:A2::/64   | 20FF:CCFF:200C::/48 | Трым-пым A0   | R1e0/1  R2e0/1  |
+| 35.10.10.0/23    | 35.10.0.0/18   | 20FF:CCFF:200C:A3::/64   | 20FF:CCFF:200C::/48 | Трым-пым A0   | R2e0/3  R4e0/3  |
+| 35.10.12.0/24    | 35.10.0.0/18   | 20FF:CCFF:200C:A4::/64   | 20FF:CCFF:200C::/48 | Трым-пым A0   | R3e0/0  R4e0/0  |
+| 35.10.64.0/24    | 35.10.64.0/18  | 20FF:CCFF:200C:B1::/64   | 20FF:CCFF:200C::/48 | Трым-пым A42  | R3e0/1  R8e0/1  |
+| 35.10.65.0/25    | 35.10.64.0/18  | 20FF:CCFF:200C:B2::/64   | 20FF:CCFF:200C::/48 | Трым-пым A42  | R3e0/3  R14e0/3 |
+| 35.10.65.128/27  | 35.10.64.0/18  | 20FF:CCFF:200C:B3::/64   | 20FF:CCFF:200C::/48 | Трым-пым A42  | R8e0/0  R14e0/0 |
+| 35.10.128.0/26   | 35.10.128.0/18 | 20FF:CCFF:200C:C1::/64   | 20FF:CCFF:200C::/48 | Трым-пым A10  | R2e0/0  R24e0/0 |
+| 35.10.192.0/24   | 35.10.192.0/18 | 20FF:CCFF:200C:D1::/64   | 20FF:CCFF:200C::/48 | Трым-пым_2 A0 | R22e0/1 R24e0/1 |
+| 35.10.193.0/24   | 35.10.192.0/18 | 20FF:CCFF:200C:D2::/64   | 20FF:CCFF:200C::/48 | Трым-пым_2 A0 | R23e0/2 R24e0/2 |
+| 35.10.194.0/25   | 35.10.192.0/18 | 20FF:CCFF:200C:D3::/64   | 20FF:CCFF:200C::/48 | Трым-пым_2 A0 | R22e0/0 R23e0/0 |
+| 35.11.0.0/24     | 35.11.0.0/22   | 20FF:CCFF:200D:A1::/64   | 20FF:CCFF:200D::/48 | Трям-пам A0   | R13e0/2 R15e0/2 |
+| 35.11.1.0/24     | 35.11.0.0/22   | 20FF:CCFF:200D:A2::/64   | 20FF:CCFF:200D::/48 | Трям-пам A0   | R13e0/1 R16e0/1 |
+| 35.11.2.0/25     | 35.11.0.0/22   | 20FF:CCFF:200D:A3::/64   | 20FF:CCFF:200D::/48 | Трям-пам A0   | R15e0/0 R16e0/0 |
 
-C:\>ping 192.168.1.10
+  Адреса IPv4 будут, где это возможно, в последнем октете иметь цифру, совпадающую с номером маршрутизатора на схеме,
+ например, для маршрутизатора **R22** адрес будет иметь вид **35.10.192.__22__**.
 
-Pinging 192.168.1.10 with 32 bytes of data:
+  Адреса IPv6 будут, где это возможно, в последнем октете иметь цифру, совпадающую с номером маршрутизатора на схеме,
+ например, для маршрутизатора **R22** адрес будет иметь вид **20FF:CCFF:200C:D2::__22__**.
 
-Reply from 192.168.1.10: bytes=32 time=1ms TTL=128
-Reply from 192.168.1.10: bytes=32 time=4ms TTL=128
-Reply from 192.168.1.10: bytes=32 time=3ms TTL=128
-Reply from 192.168.1.10: bytes=32 time=4ms TTL=128
-
-Ping statistics for 192.168.1.10:
-Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-Approximate round trip times in milli-seconds:
-Minimum = 1ms, Maximum = 4ms, Average = 3ms
-
-b.	Из командной строки компьютера PC-A отправьте эхо-запрос на административный адрес интерфейса SVI коммутатора S1.
-C:\> ping 192.168.1.2
-C:\>ping 192.168.1.2
-
-Pinging 192.168.1.2 with 32 bytes of data:
-
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-
-Ping statistics for 192.168.1.2:
-Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-Approximate round trip times in milli-seconds:
-Minimum = 0ms, Maximum = 0ms, Average = 0ms
-
-Шаг 3. Проверьте удаленное управление коммутатором S1.
-a.	Откройте Tera Term или другую программу эмуляции терминала с возможностью Telnet. 
-b.	Выберите сервер Telnet и укажите адрес управления SVI для подключения к S1.  Пароль: cisco.
-c.	После ввода пароля cisco вы окажетесь в командной строке пользовательского режима. Для перехода в исполнительский режим EXEC введите команду enable и используйте секретный пароль class.
-d.	Сохраните конфигурацию.
-Trying 192.168.1.2 ...Open Unauthorized access is strictly prohibited. 
+  Link-local адреса IPv6 будут в последнем октете иметь цифру, совпадающую с номером маршрутизатора на схеме,
+ например, для маршрутизатора **R22** все link-local адреса будут иметь вид **FE80::__22__**. Link-local адреса
+ IPv6 располагаются в подсети `FE80::/10`.
 
 
-User Access Verification
+  Служебная информация.
 
-Password: 
-S1>enable
-Password: 
-S1#sh run
-Building configuration...
-
-Current configuration : 1318 bytes
-!
-version 15.0
-no service timestamps log datetime msec
-no service timestamps debug datetime msec
-service password-encryption
-!
-hostname S1
-!
-enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
-!
-!
-!
-no ip domain-lookup
-!
-!
-!
-spanning-tree mode pvst
-spanning-tree extend system-id
-!
-interface FastEthernet0/1
-!
-interface FastEthernet0/2
-!
-interface FastEthernet0/3
-!
-interface FastEthernet0/4
-!
-interface FastEthernet0/5
-!
-interface FastEthernet0/6
-!
-interface FastEthernet0/7
-!
-interface FastEthernet0/8
-!
-interface FastEthernet0/9
-!
-interface FastEthernet0/10
-!
-interface FastEthernet0/11
-!
-interface FastEthernet0/12
-!
-interface FastEthernet0/13
-!
-interface FastEthernet0/14
-!
-interface FastEthernet0/15
-!
-interface FastEthernet0/16
-!
-interface FastEthernet0/17
-!
-interface FastEthernet0/18
-!
-interface FastEthernet0/19
-!
-interface FastEthernet0/20
-!
-interface FastEthernet0/21
-!
-interface FastEthernet0/22
-!
-interface FastEthernet0/23
-!
-interface FastEthernet0/24
-!
-interface GigabitEthernet0/1
-!
-interface GigabitEthernet0/2
-!
-interface Vlan1
-ip address 192.168.1.2 255.255.255.0
-!
-banner motd ^C Unauthorized access is strictly prohibited. ^C
-!
-!
-!
-line con 0
-password 7 0822455D0A16
-logging synchronous
-login
-!
-line vty 0 4
-password 7 0822455D0A16
-login
-line vty 5 15
-password 7 0822455D0A16
-login
-!
-!
-!
-!
-end
+| Network IPv4     | Summary net    | Network IPv6             | Summary net         | Description   |
+|-----------------:|:---------------|-------------------------:|:--------------------|:-------------:|
+| 10.0.0.0/8       | 10.0.0.0/8     | FC00::/8                 | FC00::/8            | Int serv net  |
+|                  |                |                          | 20FF:CCFF::/32      | All IPv6 nets |
 
 
-S1#
-Закройте окно настройки.
-Вопросы для повторения
-1.	Зачем необходимо настраивать пароль VTY для коммутатора?
-Чтобы ограничить удаленный доступ к устройству через Telnet или SSH.
-2.	Что нужно сделать, чтобы пароли не отправлялись в незашифрованном виде?
-Чтобы зашифровать пароли, нужно воспользоваться командой service password-encryption в режиме глобальной конфигурации.
+###  2. Задокументируем выделенные для маршрутизаторов IP-адреса.
 
+
+  Общая таблица сетевых адресов на интерфейсах маршрутизаторов.
+
+| Equip | Port | AddrTyp | Address                  | Network                | Description     |
+|-------|------|---------|--------------------------|------------------------|-----------------|
+| R1    | e0/0 | IPv4    | 172.16.19.2/28           | 172.16.19.0/28         | to ISP (R19)    |
+| R1    | e0/0 | IPv6    | 20FF:CCFF:1000:19::2/64  | 20FF:CCFF:1000:19::/64 | to ISP (R19)    |   
+| R1    | e0/0 | IPv6 LL | FE80::1                  | FE80::/10              | link-local e0/0 |
+| R1    | e0/1 | IPv4    | 35.10.8.1/23             | 35.10.8.0/23           | R1 to R2        |
+| R1    | e0/1 | IPv6    | 20FF:CCFF:200C:A2::1/64  | 20FF:CCFF:200C:A2::/64 | R1 to R2        |
+| R1    | e0/1 | IPv6 LL | FE80::1                  | FE80::/10              | link-local e0/1 |
+| R1    | e0/2 | IPv4    | 35.10.0.1/21             | 35.10.0.0/21           | R1 to R3        |
+| R1    | e0/2 | IPv6    | 20FF:CCFF:200C:A1::1/64  | 20FF:CCFF:200C:A1::/64 | R1 to R3        |
+| R1    | e0/2 | IPv6 LL | FE80::1                  | FE80::/10              | link-local e0/2 |
+| R2    | e0/0 | IPv4    | 35.10.128.2/26           | 35.10.128.0/26         | R2 to R24       |
+| R2    | e0/0 | IPv6    | 20FF:CCFF:200C:C1::2/64  | 20FF:CCFF:200C:C1::/64 | R2 to R24       |
+| R2    | e0/0 | IPv6 LL | FE80::2                  | FE80::/10              | link-local e0/0 |
+| R2    | e0/1 | IPv4    | 35.10.8.2/23             | 35.10.8.0/23           | R2 to R1        |
+| R2    | e0/1 | IPv6    | 20FF:CCFF:200C:A2::2/64  | 20FF:CCFF:200C:A2::/64 | R2 to R1        |
+| R2    | e0/1 | IPv6 LL | FE80::2                  | FE80::/10              | link-local e0/1 |
+| R2    | e0/3 | IPv4    | 35.10.10.2/23            | 35.10.10.0/23          | R2 to R4        |
+| R2    | e0/3 | IPv6    | 20FF:CCFF:200C:A3::2/64  | 20FF:CCFF:200C:A3::/64 | R2 to R4        |
+| R2    | e0/3 | IPv6 LL | FE80::2                  | FE80::/10              | link-local e0/3 |
+| R3    | e0/0 | IPv4    | 35.10.12.3/24            | 35.10.12.0/24          | R3 to R4        |
+| R3    | e0/0 | IPv6    | 20FF:CCFF:200C:A4::3/64  | 20FF:CCFF:200C:A4::/64 | R3 to R4        |
+| R3    | e0/0 | IPv6 LL | FE80::3                  | FE80::/10              | link-local e0/0 |
+| R3    | e0/1 | IPv4    | 35.10.64.3/24            | 35.10.64.0/24          | R3 to R8        |
+| R3    | e0/1 | IPv6    | 20FF:CCFF:200C:B1::3/64  | 20FF:CCFF:200C:B1::/64 | R3 to R8        |
+| R3    | e0/1 | IPv6 LL | FE80::3                  | FE80::/10              | link-local e0/1 |
+| R3    | e0/2 | IPv4    | 35.10.0.3/21             | 35.10.0.0/21           | R3 to R1        |
+| R3    | e0/2 | IPv6    | 20FF:CCFF:200C:A1::3/64  | 20FF:CCFF:200C:A1::/64 | R3 to R1        |
+| R3    | e0/2 | IPv6 LL | FE80::3                  | FE80::/10              | link-local e0/2 |
+| R3    | e0/3 | IPv4    | 35.10.65.3/25            | 35.10.65.0/25          | R3 to R14       |
+| R3    | e0/3 | IPv6    | 20FF:CCFF:200C:B2::3/64  | 20FF:CCFF:200C:B2::/64 | R3 to R14       |
+| R3    | e0/3 | IPv6 LL | FE80::3                  | FE80::/10              | link-local e0/3 |
+| R4    | e0/0 | IPv4    | 35.10.12.4/24            | 35.10.12.0/24          | R4 to R3        |
+| R4    | e0/0 | IPv6    | 20FF:CCFF:200C:A4::4/64  | 20FF:CCFF:200C:A4::/64 | R4 to R3        |
+| R4    | e0/0 | IPv6 LL | FE80::4                  | FE80::/10              | link-local e0/0 |
+| R4    | e0/3 | IPv4    | 35.10.10.4/23            | 35.10.10.0/23          | R4 to R2        |
+| R4    | e0/3 | IPv6    | 20FF:CCFF:200C:A3::4/64  | 20FF:CCFF:200C:A3::/64 | R4 to R2        |
+| R4    | e0/3 | IPv6 LL | FE80::4                  | FE80::/10              | link-local e0/3 |
+| R5    | e0/0 | IPv4    | 172.16.17.2/29           | 172.16.17.0/29         | to ISP (R17)    |
+| R5    | e0/0 | IPv6    | 20FF:CCFF:1000:17::2/64  | 20FF:CCFF:1000:17::/64 | to ISP (R17)    |
+| R5    | e0/0 | IPv6 LL | FE80::5                  | FE80::/10              | link-local e0/0 |
+| R5    | e0/1 | IPv4    | 50.50.105.5/25           | 50.50.105.0/25         | R5 to R6        |
+| R5    | e0/1 | IPv6    | 20FF:CCFF:200B:A2::5/64  | 20FF:CCFF:200B:A2::/64 | R5 to R6        |
+| R5    | e0/1 | IPv6 LL | FE80::5                  | FE80::/10              | link-local e0/1 |
+| R5    | e0/2 | IPv4    | 50.50.104.5/24           | 50.50.104.0/24         | R5 to R7        |
+| R5    | e0/2 | IPv6    | 20FF:CCFF:200B:A1::5/64  | 20FF:CCFF:200B:A1::/64 | R5 to R7        |
+| R5    | e0/2 | IPv6 LL | FE80::5                  | FE80::/10              | link-local e0/2 |
+| R6    | e0/0 | IPv4    | 50.50.105.129/25         | 50.50.105.128/25       | R6 to R7        |
+| R6    | e0/0 | IPv6    | 20FF:CCFF:200B:A3::6/64  | 20FF:CCFF:200B:A3::/64 | R6 to R7        |
+| R6    | e0/0 | IPv6 LL | FE80::6                  | FE80::/10              | link-local e0/0 |
+| R6    | e0/1 | IPv4    | 50.50.105.6/25           | 50.50.105.0/25         | R6 to R5        |
+| R6    | e0/1 | IPv6    | 20FF:CCFF:200B:A2::6/64  | 20FF:CCFF:200B:A2::/64 | R6 to R5        |
+| R6    | e0/1 | IPv6 LL | FE80::6                  | FE80::/10              | link-local e0/1 |
+| R7    | e0/0 | IPv4    | 50.50.105.130/25         | 50.50.105.128/25       | R7 to R6        |
+| R7    | e0/0 | IPv6    | 20FF:CCFF:200B:A3::7/64  | 20FF:CCFF:200B:A3::/64 | R7 to R6        |
+| R7    | e0/0 | IPv6 LL | FE80::7                  | FE80::/10              | link-local e0/0 |
+| R7    | e0/2 | IPv4    | 50.50.104.7/24           | 50.50.104.0/24         | R7 to R5        |
+| R7    | e0/2 | IPv6    | 20FF:CCFF:200B:A1::7/64  | 20FF:CCFF:200B:A1::/64 | R7 to R5        |
+| R7    | e0/2 | IPv6 LL | FE80::7                  | FE80::/10              | link-local e0/2 |
+| R8    | e0/0 | IPv4    | 35.10.65.129/27          | 35.10.65.128/27        | R8 to R14       |
+| R8    | e0/0 | IPv6    | 20FF:CCFF:200C:B3::8/64  | 20FF:CCFF:200C:B3::/64 | R8 to R14       |
+| R8    | e0/0 | IPv6 LL | FE80::8                  | FE80::/10              | link-local e0/0 |
+| R8    | e0/1 | IPv4    | 35.10.64.8/24            | 35.10.64.0/24          | R8 to R3        |
+| R8    | e0/1 | IPv6    | 20FF:CCFF:200C:B1::8/64  | 20FF:CCFF:200C:B1::/64 | R8 to R3        |
+| R8    | e0/1 | IPv6 LL | FE80::8                  | FE80::/10              | link-local e0/1 |
+| R9    | e0/0 | IPv4    | 172.16.18.2/29           | 172.16.18.0/29         | to ISP (R18)    |
+| R9    | e0/0 | IPv6    | 20FF:CCFF:1000:18::2/64  | 20FF:CCFF:1000:18::/64 | to ISP (R18)    |
+| R9    | e0/0 | IPv6 LL | FE80::9                  | FE80::/10              | link-local e0/0 |
+| R9    | e0/1 | IPv4    | 50.50.96.9/23            | 50.50.96.0/23          | R9 to R12       |
+| R9    | e0/1 | IPv6    | 20FF:CCFF:200A:A1::9/64  | 20FF:CCFF:200A:A1::/64 | R9 to R12       |
+| R9    | e0/1 | IPv6 LL | FE80::9                  | FE80::/10              | link-local e0/1 |
+| R9    | e0/2 | IPv4    | 50.50.100.9/24           | 50.50.100.0/24         | R9 to R10       |
+| R9    | e0/2 | IPv6    | 20FF:CCFF:200A:A3::9/64  | 20FF:CCFF:200A:A3::/64 | R9 to R10       |
+| R9    | e0/2 | IPv6 LL | FE80::9                  | FE80::/10              | link-local e0/2 |
+| R9    | e0/3 | IPv4    | 50.50.102.9/29           | 50.50.102.8/29         | R9 to R11       |
+| R9    | e0/3 | IPv6    | 20FF:CCFF:200A:A5::9/64  | 20FF:CCFF:200A:A5::/64 | R9 to R11       |
+| R9    | e0/3 | IPv6 LL | FE80::9                  | FE80::/10              | link-local e0/3 |
+| R10   | e0/1 | IPv4    | 50.50.101.10/24          | 50.50.101.0/24         | R10 to R11      |
+| R10   | e0/1 | IPv6    | 20FF:CCFF:200A:A4::10/64 | 20FF:CCFF:200A:A4::/64 | R10 to R11      |
+| R10   | e0/1 | IPv6 LL | FE80::10                 | FE80::/10              | link-local e0/1 |
+| R10   | e0/2 | IPv4    | 50.50.100.10/24          | 50.50.100.0/24         | R10 to R9       |
+| R10   | e0/2 | IPv6    | 20FF:CCFF:200A:A3::10/64 | 20FF:CCFF:200A:A3::/64 | R10 to R9       |
+| R10   | e0/2 | IPv6 LL | FE80::10                 | FE80::/10              | link-local e0/2 |
+| R11   | e0/0 | IPv4    | 50.50.98.11/23           | 50.50.98.0/23          | R11 to R12      |
+| R11   | e0/0 | IPv6    | 20FF:CCFF:200A:A2::11/64 | 20FF:CCFF:200A:A2::/64 | R11 to R12      |
+| R11   | e0/0 | IPv6 LL | FE80::11                 | FE80::/10              | link-local e0/0 |
+| R11   | e0/1 | IPv4    | 50.50.101.11/24          | 50.50.101.0/24         | R11 to R10      |
+| R11   | e0/1 | IPv6    | 20FF:CCFF:200A:A4::11/64 | 20FF:CCFF:200A:A4::/64 | R11 to R10      |
+| R11   | e0/1 | IPv6 LL | FE80::11                 | FE80::/10              | link-local e0/1 |
+| R11   | e0/3 | IPv4    | 50.50.102.11/29          | 50.50.102.8/29         | R11 to R9       |
+| R11   | e0/3 | IPv6    | 20FF:CCFF:200A:A5::11/64 | 20FF:CCFF:200A:A5::/64 | R11 to R9       |
+| R11   | e0/3 | IPv6 LL | FE80::11                 | FE80::/10              | link-local e0/3 |
+| R12   | e0/0 | IPv4    | 50.50.98.12/23           | 50.50.98.0/23          | R12 to R11      |
+| R12   | e0/0 | IPv6    | 20FF:CCFF:200A:A2::12/64 | 20FF:CCFF:200A:A2::/64 | R12 to R11      |
+| R12   | e0/0 | IPv6 LL | FE80::12                 | FE80::/10              | link-local e0/0 |
+| R12   | e0/1 | IPv4    | 50.50.96.12/23           | 50.50.96.0/23          | R12 to R9       |
+| R12   | e0/1 | IPv6    | 20FF:CCFF:200A:A1::12/64 | 20FF:CCFF:200A:A1::/64 | R12 to R9       |
+| R12   | e0/1 | IPv6 LL | FE80::12                 | FE80::/10              | link-local e0/1 |
+| R13   | e0/0 | IPv4    | 172.16.20.2/29           | 172.16.20.0/29         | to ISP (R20)    |
+| R13   | e0/0 | IPv6    | 20FF:CCFF:1000:20::2/64  | 20FF:CCFF:1000:20::/64 | to ISP (R20)    |
+| R13   | e0/0 | IPv6 LL | FE80::13                 | FE80::/10              | link-local e0/0 |
+| R13   | e0/1 | IPv4    | 35.11.1.13/24            | 35.11.1.0/24           | R13 to R16      |
+| R13   | e0/1 | IPv6    | 20FF:CCFF:200D:A2::13/64 | 20FF:CCFF:200D:A2::/64 | R13 to R16      |
+| R13   | e0/1 | IPv6 LL | FE80::13                 | FE80::/10              | link-local e0/1 |
+| R13   | e0/2 | IPv4    | 35.11.0.13/24            | 35.11.0.0/24           | R13 to R15      |
+| R13   | e0/2 | IPv6    | 20FF:CCFF:200D:A1::13/64 | 20FF:CCFF:200D:A1::/64 | R13 to R15      |
+| R13   | e0/2 | IPv6 LL | FE80::13                 | FE80::/10              | link-local e0/2 |
+| R14   | e0/0 | IPv4    | 35.10.65.130/27          | 35.10.65.128/27        | R14 to R8       |
+| R14   | e0/0 | IPv6    | 20FF:CCFF:200C:B3::14/64 | 20FF:CCFF:200C:B3::/64 | R14 to R8       |
+| R14   | e0/0 | IPv6 LL | FE80::14                 | FE80::/10              | link-local e0/0 |
+| R14   | e0/3 | IPv4    | 35.10.65.14/25           | 35.10.65.0/25          | R14 to R3       |
+| R14   | e0/3 | IPv6    | 20FF:CCFF:200C:B2::14/64 | 20FF:CCFF:200C:B2::/64 | R14 to R3       |
+| R14   | e0/3 | IPv6 LL | FE80::14                 | FE80::/10              | link-local e0/3 |
+| R15   | e0/0 | IPv4    | 35.11.2.15/25            | 35.11.2.0/25           | R15 to R16      |
+| R15   | e0/0 | IPv6    | 20FF:CCFF:200D:A3::15/64 | 20FF:CCFF:200D:A3::/64 | R15 to R16      |
+| R15   | e0/0 | IPv6 LL | FE80::15                 | FE80::/10              | link-local e0/0 |
+| R15   | e0/2 | IPv4    | 35.11.0.15/24            | 35.11.0.0/24           | R15 to R13      |
+| R15   | e0/2 | IPv6    | 20FF:CCFF:200D:A1::15/64 | 20FF:CCFF:200D:A1::/64 | R15 to R13      |
+| R15   | e0/2 | IPv6 LL | FE80::15                 | FE80::/10              | link-local e0/2 |
+| R16   | e0/0 | IPv4    | 35.11.2.16/25            | 35.11.2.0/25           | R16 to R15      |
+| R16   | e0/0 | IPv6    | 20FF:CCFF:200D:A3::16/64 | 20FF:CCFF:200D:A3::/64 | R16 to R15      |
+| R16   | e0/0 | IPv6 LL | FE80::16                 | FE80::/10              | link-local e0/0 |
+| R16   | e0/1 | IPv4    | 35.11.1.16/24            | 35.11.1.0/24           | R16 to R13      |
+| R16   | e0/1 | IPv6    | 20FF:CCFF:200D:A2::16/64 | 20FF:CCFF:200D:A2::/64 | R16 to R13      |
+| R16   | e0/1 | IPv6 LL | FE80::16                 | FE80::/10              | link-local e0/1 |
+| R17   | e0/0 | IPv4    | 172.16.17.1/29           | 172.16.17.0/29         | to client (R5)  |
+| R17   | e0/0 | IPv6    | 20FF:CCFF:1000:17::1/64  | 20FF:CCFF:1000:17::/64 | to client (R5)  |
+| R17   | e0/0 | IPv6 LL | FE80::17                 | FE80::/10              | link-local e0/0 |
+| R17   | e0/1 | IPv4    | 90.90.129.17/24          | 90.90.129.0/24         | R17 to R18      |
+| R17   | e0/1 | IPv6    | 20FF:CCFF:FFFF:2::17/64  | 20FF:CCFF:FFFF:2::/64  | R17 to R18      |
+| R17   | e0/1 | IPv6 LL | FE80::17                 | FE80::/10              | link-local e0/2 |
+| R17   | e0/2 | IPv4    | 90.90.128.17/24          | 90.90.128.0/24         | R17 to R19      |
+| R17   | e0/2 | IPv6    | 20FF:CCFF:FFFF:1::17/64  | 20FF:CCFF:FFFF:1::/64  | R17 to R19      |
+| R17   | e0/2 | IPv6 LL | FE80::17                 | FE80::/10              | link-local e0/1 |
+| R17   | e0/3 | IPv4    | 90.90.131.17/25          | 90.90.131.0/25         | R17 to R20      |
+| R17   | e0/3 | IPv6    | 20FF:CCFF:FFFF:5::17/64  | 20FF:CCFF:FFFF:5::/64  | R17 to R20      |
+| R17   | e0/3 | IPv6 LL | FE80::17                 | FE80::/10              | link-local e0/3 |
+| R18   | e0/0 | IPv4    | 172.16.18.1/29           | 172.16.18.0/29         | to client (R9)  |
+| R18   | e0/0 | IPv6    | 20FF:CCFF:1000:18::1/64  | 20FF:CCFF:1000:18::/64 | to client (R9)  |
+| R18   | e0/0 | IPv6 LL | FE80::18                 | FE80::/10              | link-local e0/0 |
+| R18   | e0/1 | IPv4    | 90.90.129.18/24          | 90.90.129.0/24         | R18 to R17      |
+| R18   | e0/1 | IPv6    | 20FF:CCFF:FFFF:2::18/64  | 20FF:CCFF:FFFF:2::/64  | R18 to R17      |
+| R18   | e0/1 | IPv6 LL | FE80::18                 | FE80::/10              | link-local e0/1 |
+| R18   | e0/2 | IPv4    | 90.90.130.18/25          | 90.90.130.0/25         | R18 to R20      |
+| R18   | e0/2 | IPv6    | 20FF:CCFF:FFFF:3::18/64  | 20FF:CCFF:FFFF:3::/64  | R18 to R20      |
+| R18   | e0/2 | IPv6 LL | FE80::18                 | FE80::/10              | link-local e0/2 |
+| R18   | e0/3 | IPv4    | 90.90.131.129/25         | 90.90.131.128/25       | R18 to R19      |
+| R18   | e0/3 | IPv6    | 20FF:CCFF:FFFF:6::18/64  | 20FF:CCFF:FFFF:6::/64  | R18 to R19      |
+| R18   | e0/3 | IPv6 LL | FE80::18                 | FE80::/10              | link-local e0/3 |
+| R19   | e0/0 | IPv4    | 172.16.19.1/28           | 172.16.19.0/28         | to client (R1)  |
+| R19   | e0/0 | IPv6    | 20FF:CCFF:1000:19::1/64  | 20FF:CCFF:1000:19::/64 | to client (R1)  |
+| R19   | e0/0 | IPv6 LL | FE80::19                 | FE80::/10              | link-local e0/0 |
+| R19   | e0/1 | IPv4    | 90.90.130.129/25         | 90.90.130.128/25       | R19 to R20      |
+| R19   | e0/1 | IPv6    | 20FF:CCFF:FFFF:4::19/64  | 20FF:CCFF:FFFF:4::/64  | R19 to R20      |
+| R19   | e0/1 | IPv6 LL | FE80::19                 | FE80::/10              | link-local e0/2 |
+| R19   | e0/2 | IPv4    | 90.90.128.19/24          | 90.90.128.0/24         | R19 to R17      |
+| R19   | e0/2 | IPv6    | 20FF:CCFF:FFFF:1::19/64  | 20FF:CCFF:FFFF:1::/64  | R19 to R17      |
+| R19   | e0/2 | IPv6 LL | FE80::19                 | FE80::/10              | link-local e0/1 |
+| R19   | e0/3 | IPv4    | 90.90.131.130/25         | 90.90.131.128/25       | R19 to R18      |
+| R19   | e0/3 | IPv6    | 20FF:CCFF:FFFF:6::19/64  | 20FF:CCFF:FFFF:6::/64  | R19 to R18      |
+| R19   | e0/3 | IPv6 LL | FE80::19                 | FE80::/10              | link-local e0/3 |
+| R20   | e0/0 | IPv4    | 172.16.20.1/29           | 172.16.20.0/29         | to client (R13) |
+| R20   | e0/0 | IPv6    | 20FF:CCFF:1000:20::1/64  | 20FF:CCFF:1000:20::/64 | to client (R13) |
+| R20   | e0/0 | IPv6 LL | FE80::20                 | FE80::/10              | link-local e0/0 |
+| R20   | e0/1 | IPv4    | 90.90.130.130/25         | 90.90.130.128/25       | R20 to R19      |
+| R20   | e0/1 | IPv6    | 20FF:CCFF:FFFF:4::20/64  | 20FF:CCFF:FFFF:4::/64  | R20 to R19      |
+| R20   | e0/1 | IPv6 LL | FE80::20                 | FE80::/10              | link-local e0/1 |
+| R20   | e0/2 | IPv4    | 90.90.130.20/25          | 90.90.130.0/25         | R20 to R18      |
+| R20   | e0/2 | IPv6    | 20FF:CCFF:FFFF:3::20/64  | 20FF:CCFF:FFFF:3::/64  | R20 to R18      |
+| R20   | e0/2 | IPv6 LL | FE80::20                 | FE80::/10              | link-local e0/2 |
+| R20   | e0/3 | IPv4    | 90.90.131.20/25          | 90.90.131.0/25         | R20 to R17      |
+| R20   | e0/3 | IPv6    | 20FF:CCFF:FFFF:5::20/64  | 20FF:CCFF:FFFF:5::/64  | R20 to R17      |
+| R20   | e0/3 | IPv6 LL | FE80::20                 | FE80::/10              | link-local e0/3 |
+| R22   | e0/0 | IPv4    | 35.10.194.22/25          | 35.10.194.0/25         | R22 to R23      |
+| R22   | e0/0 | IPv6    | 20FF:CCFF:200C:D3::22/64 | 20FF:CCFF:200C:D3::/64 | R22 to R23      |
+| R22   | e0/0 | IPv6 LL | FE80::22                 | FE80::/10              | link-local e0/0 |
+| R22   | e0/1 | IPv4    | 35.10.192.22/24          | 35.10.192.0/24         | R22 to R24      |
+| R22   | e0/1 | IPv6    | 20FF:CCFF:200C:D2::22/64 | 20FF:CCFF:200C:D2::/64 | R22 to R24      |
+| R22   | e0/1 | IPv6 LL | FE80::22                 | FE80::/10              | link-local e0/1 |
+| R23   | e0/0 | IPv4    | 35.10.194.23/25          | 35.10.194.0/25         | R23 to R22      |
+| R23   | e0/0 | IPv6    | 20FF:CCFF:200C:D3::23/64 | 20FF:CCFF:200C:D3::/64 | R23 to R22      |
+| R23   | e0/0 | IPv6 LL | FE80::23                 | FE80::/10              | link-local e0/0 |
+| R23   | e0/2 | IPv4    | 35.10.193.23/24          | 35.10.193.0/24         | R23 to R24      |
+| R23   | e0/2 | IPv6    | 20FF:CCFF:200C:D1::23/64 | 20FF:CCFF:200C:D1::/64 | R23 to R24      |
+| R23   | e0/2 | IPv6 LL | FE80::23                 | FE80::/10              | link-local e0/2 |
+| R24   | e0/0 | IPv4    | 35.10.128.24/26          | 35.10.128.0/26         | R24 to R2       |
+| R24   | e0/0 | IPv6    | 20FF:CCFF:200C:C1::24/64 | 20FF:CCFF:200C:C1::/64 | R24 to R2       |
+| R24   | e0/0 | IPv6 LL | FE80::24                 | FE80::/10              | link-local e0/0 |
+| R24   | e0/1 | IPv4    | 35.10.192.24/24          | 35.10.192.0/24         | R24 to R23      |
+| R24   | e0/1 | IPv6    | 20FF:CCFF:200C:D1::24/64 | 20FF:CCFF:200C:D1::/64 | R24 to R23      |
+| R24   | e0/1 | IPv6 LL | FE80::24                 | FE80::/10              | link-local e0/1 |
+| R24   | e0/2 | IPv4    | 35.10.193.24/24          | 35.10.193.0/24         | R24 to R22      |
+| R24   | e0/2 | IPv6    | 20FF:CCFF:200C:D2::24/64 | 20FF:CCFF:200C:D2::/64 | R24 to R22      |
+| R24   | e0/2 | IPv6 LL | FE80::24                 | FE80::/10              | link-local e0/2 |
+
+
+
+###  3. Настроим IP-адреса с учетом приведённой выше схемы и задокументируем изменения.
+
+  Изменения на маршрутизаторах сводятся к:
+  1. Включению ipv6 unicast-routing (ipv4 unicast-routing по-умолчанию включен);
+  2. Включению ipv6 на интерфейсах (ipv4 по-умолчанию включен);
+  2. Назначению адресов ipv4 и ipv6 на интерфейсах;
+  3. Включению самих интерфейсов (физические интерфейсы по-умолчанию выключены).
+
+###  Пример настройки на маршрутизаторе R1:
+
+```
+conf t
+ ipv6 unicast-routing
+!
+ interface Ethernet0/0
+  description "to Internet (R19)"
+  ip address 172.16.19.2 255.255.255.240
+  ipv6 address FE80::1 link-local
+  ipv6 address 20FF:CCFF:1000:19::2/64
+  ipv6 enable
+  no shutdown
+  exit
+!
+ interface Ethernet0/1
+  description "R1 to R2"
+  ip address 35.10.8.1 255.255.254.0
+  ipv6 address FE80::1 link-local
+  ipv6 address 20FF:CCFF:200C:A2::1/64
+  ipv6 enable
+  no shutdown
+  exit
+!
+ interface Ethernet0/2
+  description "R1 to R3"
+  ip address 35.10.0.1 255.255.248.0
+  ipv6 address FE80::1 link-local
+  ipv6 address 20FF:CCFF:200C:A1::1/64
+  ipv6 enable
+  no shutdown
+  exit
+!
+ interface Ethernet0/3
+  description "not used"
+  no ip address
+  shutdown
+  exit
+ exit
+```
+
+Все файлы изменений приведены [здесь](configs/).
+
+
+###  Итоговая графическая схема:
+
+![](ip-addresses.png)
