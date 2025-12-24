@@ -143,7 +143,7 @@ a.	Используйте консольное подключение на ко�
  b.	Проверьте параметры VLAN 1.
  
 S1# show interface vlan 1
-S1#show interface vlan 1
+S1# show interface vlan 1
 Vlan1 is up, line protocol is up
 Hardware is CPU Interface, address is 00e0.b051.4598 (bia 00e0.b051.4598)
 Internet address is 192.168.1.2/24
