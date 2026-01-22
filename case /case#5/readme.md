@@ -121,7 +121,6 @@
 
 ![](figure3.png)
 
-
 ### 5. Проверьте подключение к сети.
 
 Пошлите с PC-A команду Ping на маршрутизатор R1. Если эхо-запрос с помощью команды ping не проходит, найдите и устраните неполадки подключения.
@@ -213,131 +212,130 @@
 
 *R1#*
 
- # Часть 3. Проверка сетевых подключений
+ # Часть 3. Настройка коммутатора для доступа по протоколу SSH
  
-В третьей части лабораторной работы вам предстоит проверить и задокументировать конфигурацию коммутатора, протестировать сквозное соединение между компьютером PC-A и коммутатором S1, а также протестировать возможность удаленного управления коммутатором.
+В части 3 вам предстоит настроить коммутатор для приема подключений по протоколу SSH, а затем установить SSH-подключение с помощью программы Tera Term.
 
-###  1. Отобразите конфигурацию коммутатора.
+###  1. Настройте основные параметры коммутатора.
 
-a.	Используйте консольное подключение на компьютере PC-A для отображения и проверки конфигурации коммутатора. Команда show run позволяет постранично отобразить всю текущую конфигурацию.
+Файл конфигурации коммутатора [здесь](config_S1.txt).
 
- Файл текущей конфигурации [здесь](config_1.txt).
+###  2. Настройте коммутатор для соединения по протоколу SSH.
 
- b.	Проверьте параметры VLAN 1.
+Для настройки протокола SSH на коммутаторе используйте те же команды, которые применялись для аналогичной настройки маршрутизатора в части 2.
+
+a. Настройте имя устройства, как указано в таблице адресации.
+
+b. Задайте домен для устройства.
+
+c. Создайте ключ шифрования с указанием его длины.
+
+*S1(config)#ip domain-name otus.ru*
+
+*S1(config)#crypto key generate rsa*
+
+*The name for the keys will be: S1.otus.ru*
+
+*Choose the size of the key modulus in the range of 360 to 2048 for your*
+
+*General Purpose Keys. Choosing a key modulus greater than 512 may take*
+
+*a few minutes.*
+
+*How many bits in the modulus [512]: 2048*
+
+*% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]*
+
+d. Создайте имя пользователя в локальной базе учетных записей.
+
+e. Активируйте протоколы Telnet и SSH на линиях VTY.
+
+f. Измените способ входа в систему таким образом, чтобы использовалась проверка пользователей по локальной базе учетных записей.
+
+*S1(config)#ip domain-name otus.ru*
+
+*S1(config)#crypto key generate rsa*
+
+*The name for the keys will be: S1.otus.ru*
+
+*Choose the size of the key modulus in the range of 360 to 2048 for your*
+
+*General Purpose Keys. Choosing a key modulus greater than 512 may take*
+
+*a few minutes.*
+
+*How many bits in the modulus [512]: 2048*
+
+*% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]*
+
+*S1(config)#ip ssh version 2*
+
+*S1(config)#do sh ip ssh*
+
+*SSH Enabled - version 2.0*
+
+*Authentication timeout: 120 secs; Authentication retries: 3*
+
+*S1(config)#username admin privilege 15 secret Adm1nP@55*
+
+*S1(config)#line vty 0 4*
+
+*S1(config-line)#transport input ssh*
+
+*S1(config-line)#login local*
+
+*S1# copy running-config startup-config*
+
+*Destination filename [startup-config]?*
+
+*Building configuration...*
+
+*[OK]*
+
+###  3. Установите соединение с коммутатором по протоколу SSH.
+
+Запустите программу Tera Term на PC-A, затем установите подключение по протоколу SSH к интерфейсу SVI коммутатора S1.
+
+*C:\> ssh -l admin 192.168.1.11*
+
+*Password:*
+
+*Unauthorized access is strictly prohibited*
+
+*S1#*
+
+ # Часть 4. Настройка протокола SSH с использованием интерфейса командной строки (CLI) коммутатора
  
-S1# show interface vlan 1
+Клиент SSH встроен в операционную систему Cisco IOS и может запускаться из интерфейса командной строки.
 
-S1# show interface vlan 1
+В части 4 вам предстоит установить соединение с маршрутизатором по протоколу SSH, используя интерфейс командной строки коммутатора.
 
-Vlan1 is up, line protocol is up
+###  1. Посмотрите доступные параметры для клиента SSH в Cisco IOS.
 
-Hardware is CPU Interface, address is 00e0.b051.4598 (bia 00e0.b051.4598)
+Откройте окно конфигурации
 
-Internet address is 192.168.1.2/24
+Используйте вопросительный знак (?), чтобы отобразить варианты параметров для команды ssh.
 
-MTU 1500 bytes, BW 100000 Kbit, DLY 1000000 usec,
+![](figure4.png)
+  
+###  2. Установите с коммутатора S1 соединение с маршрутизатором R1 по протоколу SSH.
 
-reliability 255/255, txload 1/255, rxload 1/255
+![](figure5.png)
 
-Encapsulation ARPA, loopback not set
-
-ARP type: ARPA, ARP Timeout 04:00:00
-
-Last input 21:40:21, output never, output hang never
-
-Last clearing of "show interface" counters never
-
-Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
-
-Queueing strategy: fifo
-
-Output queue: 0/40 (size/max)
-
-5 minute input rate 0 bits/sec, 0 packets/sec
-
-5 minute output rate 0 bits/sec, 0 packets/sec
-
-1682 packets input, 530955 bytes, 0 no buffer
-
-Received 0 broadcasts (0 IP multicast)
-
-0 runts, 0 giants, 0 throttles
-
-0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
-
-563859 packets output, 0 bytes, 0 underruns
-
-0 output errors, 23 interface resets
-
-0 output buffer failures, 0 output buffers swapped out
-
-Какова полоса пропускания этого интерфейса? - MTU 1500 bytes.
-
-###  2. Протестируйте сквозное соединение, отправив эхо-запрос.
-
-a.	В командной строке компьютера PC-A с помощью утилиты ping проверьте связь сначала с адресом PC-A.
-
-C:\>ping 192.168.1.10
-
-Pinging 192.168.1.10 with 32 bytes of data:
-
-Reply from 192.168.1.10: bytes=32 time=1ms TTL=128
-
-Reply from 192.168.1.10: bytes=32 time=4ms TTL=128
-
-Reply from 192.168.1.10: bytes=32 time=3ms TTL=128
-
-Reply from 192.168.1.10: bytes=32 time=4ms TTL=128
-
-Ping statistics for 192.168.1.10:
-
-Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-
-Approximate round trip times in milli-seconds:
-
-Minimum = 1ms, Maximum = 4ms, Average = 3ms
-
-b.	Из командной строки компьютера PC-A отправьте эхо-запрос на административный адрес интерфейса SVI коммутатора S1.
-
-C:\> ping 192.168.1.2
-
-Pinging 192.168.1.2 with 32 bytes of data:
-
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-
-Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
-
-Ping statistics for 192.168.1.2:
-
-Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-
-Approximate round trip times in milli-seconds:
-
-Minimum = 0ms, Maximum = 0ms, Average = 0ms
-
-###  3. Проверьте удаленное управление коммутатором S1.
-
-a.	Откройте Tera Term или другую программу эмуляции терминала с возможностью Telnet.
-
-b.	Выберите сервер Telnet и укажите адрес управления SVI для подключения к S1.  Пароль: cisco.
-
-c.	После ввода пароля cisco вы окажетесь в командной строке пользовательского режима. Для перехода в исполнительский режим EXEC введите команду enable и используйте секретный пароль class.
-
-d.	Сохраните конфигурацию. - Файл текущей конфигурации [здесь](Telnet_config_1.txt).
 
 # Вопросы для повторения
 
-1.	Зачем необходимо настраивать пароль VTY для коммутатора?
-   
-   Чтобы ограничить удаленный доступ к устройству через Telnet или SSH.
+1) Какие версии протокола SSH поддерживаются при использовании интерфейса командной строки?
 
-3.	Что нужно сделать, чтобы пароли не отправлялись в незашифрованном виде?
-   
-   Чтобы зашифровать пароли, нужно воспользоваться командой service password-encryption в режиме глобальной конфигурации.
+*S1# ssh -v ?*
 
-Файл лабораторной работы Cisco PT [здесь](lab1.pkt).
+*1 Protocol Version 1*
+
+*2 Protocol Version 2*
+
+2) Как предоставить доступ к сетевому устройству нескольким пользователям, у каждого из которых есть собственное имя пользователя?
+
+*Необходимо настроить доступ по SSH и создать несколько учетных записей (логин и пароль) для пользователей*
+
+Файл лабораторной работы Cisco PT [здесь](lab5.pkt).
 
