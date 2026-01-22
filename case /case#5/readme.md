@@ -122,7 +122,29 @@
 ![](figure3.png)
 
 
+### 5. Проверьте подключение к сети.
 
+Пошлите с PC-A команду Ping на маршрутизатор R1. Если эхо-запрос с помощью команды ping не проходит, найдите и устраните неполадки подключения.
+
+*C:\> ping 192.168.1.1*
+
+*Pinging 192.168.1.1 with 32 bytes of data:*
+
+*Reply from 192.168.1.1: bytes=32 time=28ms TTL=255*
+
+*Reply from 192.168.1.1: bytes=32 time<1ms TTL=255*
+
+*Reply from 192.168.1.1: bytes=32 time<1ms TTL=255*
+
+*Reply from 192.168.1.1: bytes=32 time<1ms TTL=255*
+
+*Ping statistics for 192.168.1.1:*
+
+*Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),*
+
+*Approximate round trip times in milli-seconds:*
+
+*Minimum = 0ms, Maximum = 28ms, Average = 7ms*
 
   # Часть 2. Настройка базовых параметров сетевых устройств
 
