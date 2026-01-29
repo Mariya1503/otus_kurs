@@ -116,33 +116,81 @@ Router(config)# exit
 
 Во второй части вы создадите VLAN, как указано в таблице выше, на обоих коммутаторах. Затем вы назначите VLAN соответствующему интерфейсу и проверите настройки конфигурации. Выполните следующие задачи на каждом коммутаторе.
  
-###  1. Настройте аутентификацию устройств.
+###  1. Создайте сети VLAN на коммутаторах.
 
-При генерации ключа шифрования в качестве его части используются имя устройства и домен. Поэтому эти имена необходимо указать перед вводом команды crypto key.
+    a. Создайте и назовите необходимые VLAN на каждом коммутаторе из таблицы выше.
 
-Откройте окно конфигурации
-  
-  a. Задайте имя устройства.
-  
-  b. Задайте домен для устройства.
+```
+10 MGN active 
+20 Sales active 
+30 Operations active 
+999 Parking_Lot active 
+1000 Native active
+```
+
+
+    b. Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации.
+
+```
+S1(config)#interface vlan 10
+S1(config-if)#ip address 192.168.10.11 255.255.255.0
+S1(config-if)#no shutdown
+S1(config-if)#exit
+S1(config)#ip default-gateway 192.168.10.1
+S1(config)#exit
+```
+
+```
+S2(config)#interface vlan10
+S2(config-if)#ip address 192.168.10.12 255.255.255.0
+S2(config-if)#exit
+S2(config)#ip default-gateway 192.168.10.1
+S2(config)#exit
+```
+
+    c. Назначьте все неиспользуемые порты коммутатора VLAN Parking_Lot, настройте их для статического режима доступа и административно деактивируйте их.
+
+```
+S1(config)# interface range fa0/2-4, fa0/7-24, gi0/1-2
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 999
+S1(config-if-range)# shutdown
+```
+
+для коммутатора S2
+
+```
+S2(config)#interface range fa0/2-17, fa0/19-24, gi0/1-2
+S2(config-if-range)#switchport mode access
+S2(config-if-range)#switchport access vlan 999
+S2(config-if-range)#shutdown
+```
  
-###  2. Создайте ключ шифрования с указанием его длины.
+###  2. Назначьте сети VLAN соответствующим интерфейсам коммутатора.
 
-*R1(config)#ip domain-name otus.ru*
+    a. Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
 
-*R1(config)#crypto key generate rsa*
+```
+S1(config)#interface fa0/6
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 20
+S1(config-if)#exit
+```
 
-*The name for the keys will be: R1.otus.ru*
+для коммутатора S2
 
-*Choose the size of the key modulus in the range of 360 to 2048 for your*
+```
+S2(config)#interface f0/18
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 30
+S2(config-if)#exit
+```
 
-*General Purpose Keys. Choosing a key modulus greater than 512 may take*
+b. Убедитесь, что VLAN назначены на правильные интерфейсы.
 
-*a few minutes.*
+![](figure5_.png)
 
-*How many bits in the modulus [512]: 2048*
-
-*% Generating 2048 bit RSA keys, keys will be non-exportable...[ OK ]*
+![](figure6_.png)
 
 ###  3. Создайте имя пользователя в локальной базе учетных записей.
 
