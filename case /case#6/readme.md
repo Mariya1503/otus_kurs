@@ -188,169 +188,156 @@ S2(config-if)#exit
 
 b. Убедитесь, что VLAN назначены на правильные интерфейсы.
 
-![](figure5_.png)
-
-![](figure6_.png)
-
-###  3. Создайте имя пользователя в локальной базе учетных записей.
-
-Настройте имя пользователя, используя admin в качестве имени пользователя и Adm1nP @55 в качестве пароля.
-
-*R1(config)#username admin privilege 15 secret Adm1nP@55*
-
-###  4. Активируйте протокол SSH на линиях VTY.
-  
-  a. Активируйте протоколы Telnet и SSH на входящих линиях VTY с помощью команды transport input.
-  
-  b. Измените способ входа в систему таким образом, чтобы использовалась проверка пользователей по локальной базе учетных записей.
-
-*R1(config)#line vty 0 4*
-
-*R1(config-line)# transport input ssh*
-
-*R1(config-line)#login local*
-
-###  5. Сохраните текущую конфигурацию в файл загрузочной конфигурации.
-
-###  6.  Установите соединение с маршрутизатором по протоколу SSH.
-
-  a. Запустите Tera Term с PC-A.
-
-  b. Установите SSH-подключение к R1. Use the username admin and password *Adm1nP@55*.
-  У вас должно получиться установить SSH-подключение к R1.
-
-*C:\> ssh -l admin 192.168.1.1*
-
-*Password:* 
-
-*Unauthorized access is strictly prohibited*
-
-*R1#*
-
- # Часть 3. Настройка коммутатора для доступа по протоколу SSH
- 
-В части 3 вам предстоит настроить коммутатор для приема подключений по протоколу SSH, а затем установить SSH-подключение с помощью программы Tera Term.
-
-###  1. Настройте основные параметры коммутатора.
-
-
-
-###  2. Настройте коммутатор для соединения по протоколу SSH.
-
-Для настройки протокола SSH на коммутаторе используйте те же команды, которые применялись для аналогичной настройки маршрутизатора в части 2.
-
-a. Настройте имя устройства, как указано в таблице адресации.
-
-b. Задайте домен для устройства.
-
-c. Создайте ключ шифрования с указанием его длины.
-
-*S1(config)#ip domain-name otus.ru*
-
-*S1(config)#crypto key generate rsa*
-
-*The name for the keys will be: S1.otus.ru*
-
-*Choose the size of the key modulus in the range of 360 to 2048 for your*
-
-*General Purpose Keys. Choosing a key modulus greater than 512 may take*
-
-*a few minutes.*
-
-*How many bits in the modulus [512]: 2048*
-
-*% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]*
-
-d. Создайте имя пользователя в локальной базе учетных записей.
-
-e. Активируйте протоколы Telnet и SSH на линиях VTY.
-
-f. Измените способ входа в систему таким образом, чтобы использовалась проверка пользователей по локальной базе учетных записей.
-
-*S1(config)#ip domain-name otus.ru*
-
-*S1(config)#crypto key generate rsa*
-
-*The name for the keys will be: S1.otus.ru*
-
-*Choose the size of the key modulus in the range of 360 to 2048 for your*
-
-*General Purpose Keys. Choosing a key modulus greater than 512 may take*
-
-*a few minutes.*
-
-*How many bits in the modulus [512]: 2048*
-
-*% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]*
-
-*S1(config)#ip ssh version 2*
-
-*S1(config)#do sh ip ssh*
-
-*SSH Enabled - version 2.0*
-
-*Authentication timeout: 120 secs; Authentication retries: 3*
-
-*S1(config)#username admin privilege 15 secret Adm1nP@55*
-
-*S1(config)#line vty 0 4*
-
-*S1(config-line)#transport input ssh*
-
-*S1(config-line)#login local*
-
-*S1# copy running-config startup-config*
-
-*Destination filename [startup-config]?*
-
-*Building configuration...*
-
-*[OK]*
-
-###  3. Установите соединение с коммутатором по протоколу SSH.
-
-Запустите программу Tera Term на PC-A, затем установите подключение по протоколу SSH к интерфейсу SVI коммутатора S1.
-
-*C:\> ssh -l admin 192.168.1.11*
-
-*Password:*
-
-*Unauthorized access is strictly prohibited*
-
-*S1#*
-
- # Часть 4. Настройка протокола SSH с использованием интерфейса командной строки (CLI) коммутатора
- 
-Клиент SSH встроен в операционную систему Cisco IOS и может запускаться из интерфейса командной строки.
-
-В части 4 вам предстоит установить соединение с маршрутизатором по протоколу SSH, используя интерфейс командной строки коммутатора.
-
-###  1. Посмотрите доступные параметры для клиента SSH в Cisco IOS.
-
-Откройте окно конфигурации
-
-Используйте вопросительный знак (?), чтобы отобразить варианты параметров для команды ssh.
-
-![](figure4_.png)
-  
-###  2. Установите с коммутатора S1 соединение с маршрутизатором R1 по протоколу SSH.
-
 ![](figure5.png)
 
+![](figure6.png)
 
-# Вопросы для повторения
+ # Часть 3. Конфигурация магистрального канала стандарта 802.1Q между коммутаторами
+ 
+В части 3 вы вручную настроите интерфейс F0/1 как транк.
 
-1) Какие версии протокола SSH поддерживаются при использовании интерфейса командной строки?
+###  1. Вручную настройте магистральный интерфейс F0/1 на коммутаторах S1 и S2.
 
-*S1# ssh -v ?*
+    a. Настройка статического транкинга на интерфейсе F0/1 для обоих коммутаторов.
+    
+    b. Установите native VLAN 1000 на обоих коммутаторах.
+    
+    c. Укажите, что VLAN 10, 20, 30 и 1000 могут проходить по транку.
 
-*1 Protocol Version 1*
+    d. Проверьте транки, native VLAN и разрешенные VLAN через транк.
 
-*2 Protocol Version 2*
+```
+S1(config)#interface fa0/1
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
 
-2) Как предоставить доступ к сетевому устройству нескольким пользователям, у каждого из которых есть собственное имя пользователя?
+S1(config)#do sh int trunk
+Port Mode Encapsulation Status Native vlan
+Fa0/1 on 802.1q trunking 1000
+Port Vlans allowed on trunk
+Fa0/1 10,20,30,1000
+Port Vlans allowed and active in management domain
+Fa0/1 10,20,30,1000
+Port Vlans in spanning tree forwarding state and not pruned
+Fa0/1 none
+```
 
-*Необходимо настроить доступ по SSH и создать несколько учетных записей (логин и пароль) для пользователей*
+аналогично для S2
 
-Файл лабораторной работы Cisco PT [здесь](lab5.pkt).
+```
+S2(config)# do sh int trunk
+Port Mode Encapsulation Status Native vlan
+Fa0/1 on 802.1q trunking 1000
+Port Vlans allowed on trunk
+Fa0/1 10,20,30,1000
+Port Vlans allowed and active in management domain
+Fa0/1 10,20,30,1000
+Port Vlans in spanning tree forwarding state and not pruned
+Fa0/1 none
+```
+
+###  2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
+
+    a. Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
+
+```
+S1(config)#interface fa0/5
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
+```
+    b. Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+    
+    c. Проверка транкинга.
+    
+```
+S1# show interface trunk
+Port Mode Encapsulation Status Native vlan
+Fa0/1 on 802.1q trunking 1000
+Fa0/5 on 802.1q trunking 1000
+
+Port Vlans allowed on trunk
+Fa0/1 10,20,30,1000
+Fa0/5 10,20,30,1000
+
+Port Vlans allowed and active in management domain
+Fa0/1 10,20,30,1000
+Fa0/5 10,20,30,1000
+
+Port Vlans in spanning tree forwarding state and not pruned
+Fa0/1 10,20,30,1000
+Fa0/5 10,20,30,1000
+```
+
+Вопрос:
+
+Что произойдет, если G0/0/1 на R1 будет отключен? — коммутатор не будет показывать что порт fa0/5 транковый, порт не поднимется.
+
+![](figure7.png)
+
+ # Часть 4. Настройка маршрутизации между сетями VLAN
+
+###  1. Настройте маршрутизатор.
+
+    a. При необходимости активируйте интерфейс G0/0/1 на маршрутизаторе.
+    
+    b. Настройте подинтерфейсы для каждой VLAN, как указано в таблице IP-адресации. Все подинтерфейсы используют инкапсуляцию 802.1Q. Убедитесь, что подинтерфейсу для native VLAN не назначен IP-адрес. Включите описание для каждого подинтерфейса.
+
+Пример части конфигурации
+
+```
+R1(config)#int gi0/0/1.30
+R1(config-subif)#
+R1(config-subif)#description Operations
+R1(config-subif)#encapsulation dot1Q 30
+R1(config-subif)#ip add 192.168.30.1 255.255.255.0
+R1(config-subif)#exit
+R1(config)#int gi0/0/1.1000
+R1(config-subif)#
+R1(config-subif)#description Native
+R1(config-subif)#encapsulation dot1Q 1000
+R1(config-subif)#exit
+R1(config)#int gi0/0/1
+R1(config-if)#description Trunk link to S1
+R1(config-if)#no shut
+R1(config-if)#exit
+```
+
+    c. Убедитесь, что вспомогательные интерфейсы работают
+
+```
+interface GigabitEthernet0/0/1
+description Trunk link to S1
+no ip address
+duplex auto
+speed auto
+!
+interface GigabitEthernet0/0/1.10
+description MNG
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet0/0/1.20
+description Sales
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+!
+interface GigabitEthernet0/0/1.30
+description Operations
+encapsulation dot1Q 30
+ip address 192.168.30.1 255.255.255.0
+!
+interface GigabitEthernet0/0/1.1000
+description Native
+encapsulation dot1Q 1000
+no ip address.
+```
+
+![](figure8.png)
+
+
+
+
+Файл лабораторной работы Cisco PT [здесь](lab6.pkt).
 
