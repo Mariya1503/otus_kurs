@@ -69,7 +69,7 @@
 
 *copy running-config startup-config*
 
-Файлы конфигурации коммутаторов [здесь](config_S1.txt) и [здесь](config_S2.txt)  
+Файлы конфигурации коммутаторов [здесь](config_S1.txt) и [здесь](config_S2.txt) и [здесь](config_S3.txt)  
 
  ### 3. Проверьте связь.
 
