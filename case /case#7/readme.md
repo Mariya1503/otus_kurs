@@ -109,7 +109,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
 
 ### 1. Отключите все порты на коммутаторах.
 
-*S(config)# interface range 'f0/0-3'*
+*S(config)# interface range f0/1-21,gi0/1-2*
 
 ### 2. Настройте подключенные порты в качестве транковых.
 
