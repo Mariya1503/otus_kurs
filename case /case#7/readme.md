@@ -133,11 +133,11 @@ S1(config-if-range)#no shutdown
 
 *S1# show spanning-tree*
 
-![](figure3_S1)
+![](figure3_S1.png)
 
-![](figure3_S2)
+![](figure3_S2.png)
 
-![](figure3_S3)
+![](figure3_S3.png)
 
 В схему ниже запишите роль и состояние (Sts) активных портов на каждом коммутаторе в топологии
 
