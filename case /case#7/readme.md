@@ -109,23 +109,22 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
 
 ### 1. Отключите все порты на коммутаторах.
 
-*S(config)# interface range f0/1-21,gi0/1-2*
+*S1(config)#interface range f0/1-21,gi0/1-2*
+*S1(config-if-range)#shutdown*
 
 ### 2. Настройте подключенные порты в качестве транковых.
 
-*S(config-if-range)# switchport mode trunk*
-
-*S(config-if-range)# switchport trunk encapsulation dot1q*
+```
+S1(config)#interface range f0/1,f0/2,f0/3,f0/4
+S1(config-if-range)#switchport mode trunk
+S1(config-if-range)#switchport trunk allowed vlan 1
+```
 
 ### 3. Включите порты F0/2 и F0/4 на всех коммутаторах.
 
 ```
-S1(config)# int r e0/0, e0/3
-S1(config-if-range)# no sh
-S2(config)# int r e0/0, e0/2
-S2(config-if-range)# no sh
-S3(config)# int r e0/0, e0/3
-S3(config-if-range)# no sh*
+S1(config)#interface range f0/2, f0/4
+S1(config-if-range)#no shutdown
 ```
 
 ### 4. Отобразите данные протокола spanning-tree.
