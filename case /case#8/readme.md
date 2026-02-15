@@ -92,13 +92,29 @@ a.	Настройте интерфейсы G0/0/0 и G0/1 на R1 и R2 с ад�
 
 ```
 R1#sh ipv6 int br
-GigabitEthernet0/0/0       [up/down]
+GigabitEthernet0/0/0       [up/up]
     FE80::1
     2001:DB8:ACAD:2::1
 GigabitEthernet0/0/1       [up/up]
     FE80::1
     2001:DB8:ACAD:1::1
 GigabitEthernet0/0/2       [administratively down/down]
+    unassigned
+Vlan1                      [administratively down/down]
+    unassigned
+```
+
+```
+R2#sh ipv6 int br
+GigabitEthernet0/0/0       [up/up]
+    FE80::1
+    2001:DB8:ACAD:2::2
+GigabitEthernet0/0/1       [up/up]
+    FE80::1
+    2001:DB8:ACAD:3::1
+GigabitEthernet0/0/2       [administratively down/down]
+    unassigned
+Vlan1                      [administratively down/down]
     unassigned
 ```
 
@@ -130,14 +146,20 @@ d.	Сохраните текущую конфигурацию в файл заг
 Через несколько минут результаты команды ipconfig должны показать, что PC-A присвоил себе адрес из сети 2001:db8:1::/64.
 
 ```
-C:\Users\Student> ipconfig 
-Настройка IP для Windows
+C:\>ipconfig
 
-Ethernet adapter Ethernet 2: 
+FastEthernet0 Connection:(default port)
 
+   Connection-specific DNS Suffix..: 
+   Link-local IPv6 Address.........: FE80::200:CFF:FE75:7976
+   IPv6 Address....................: 2001:DB8:ACAD:1:200:CFF:FE75:7976
+   Autoconfiguration IPv4 Address..: 169.254.121.118
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
 ```
 
-### Откуда взялась часть адреса с идентификатором хоста?____________________
+### Откуда взялась часть адреса с идентификатором хоста? *в зависимости от операционной системы. Либо хост генерирует адрес EUI-64 на основе MAC-адреса интерфейса, либо хост генерирует случайный 64-разрядный адрес*
 
 # Часть 3. Настройка и проверка сервера DHCPv6 на R1
 
@@ -146,7 +168,23 @@ Ethernet adapter Ethernet 2:
 a.	Выполните команду ipconfig /all на PC-A и посмотрите на результат.
 
 ```
-C:\Users\Student> ipconfig /all
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0030.A364.0607
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE64:607
+   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE64:607
+   Autoconfiguration IP Address....: 169.254.6.7
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
+   DNS Servers.....................: ::
+                                     0.0.0.0
 ```
 
 b.	Обратите внимание, что основной DNS-суффикс отсутствует. Также обратите внимание, что предоставленные адреса DNS-сервера являются адресами «локального сайта anycast», а не одноадресные адреса, как ожидалось.
