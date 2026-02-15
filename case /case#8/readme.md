@@ -104,19 +104,19 @@ GigabitEthernet0/0/2       [administratively down/down]
 
 b.	Настройте маршрут по умолчанию на каждом маршрутизаторе, который указывает на IP-адрес G0/0/0 на другом маршрутизаторе.
 
-*R1(config)#ipv6 route ::/0 gi0/0/0 fe80::2*
+*R1(config)#ipv6 route ::/0 2001:DB8:ACAD:2::2*
 
-*R2(config)#ipv6 route ::/0 gi0/0/0 fe80::1*
+*R2(config)#ipv6 route ::/0 2001:DB8:ACAD:2::1*
 
 c.	Убедитесь, что маршрутизация работает с помощью пинга адреса G0/0/1 R2 из R1
 
 ```
-R1#ping ipv6 fe80::1
-Output Interface: GigabitEthernet0/0/1
+R1#ping 2001:db8:acad:3::1
+
 Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to FE80::1, timeout is 2 seconds:
+Sending 5, 100-byte ICMP Echos to 2001:db8:acad:3::1, timeout is 2 seconds:
 !!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 0/4/9 ms
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
 ```
 
 d.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
