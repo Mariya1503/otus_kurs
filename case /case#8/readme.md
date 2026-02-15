@@ -193,7 +193,6 @@ b.	Обратите внимание, что основной DNS-суффикс
 
 a.	Создайте пул DHCP IPv6 на R1 с именем R1-STATELESS. В составе этого пула назначьте адрес DNS-сервера как 2001:db8:acad: :1, а имя домена — как stateless.com.
 
-Откройте окно конфигурации
 ```
 R1(config)# ipv6 dhcp pool R1-STATELESS
 R1(config-dhcp)# dns-server 2001:db8:acad::254
@@ -215,19 +214,64 @@ d.	Перезапустите PC-A.
 e.	Проверьте вывод ipconfig /all и обратите внимание на изменения.
 
 ```
-C:\Users\Student> ipconfig /all
-Windows IP Configuration 
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: STATELESS.com
+   Physical Address................: 0030.A364.0607
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE64:607
+   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE64:607
+   Autoconfiguration IP Address....: 169.254.6.7
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 1198766745
+   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
+   DNS Servers.....................: 2001:DB8:ACAD::254
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 0060.47C2.D438
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 1198766745
+   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
+   DNS Servers.....................: ::
+                                     0.0.0.0
 ```
 
 f.	Тестирование подключения с помощью пинга IP-адреса интерфейса G0/1 R2.
+
+```
+C:\>ping 2001:db8:acad:3::1
+
+Pinging 2001:db8:acad:3::1 with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+
+Ping statistics for 2001:DB8:ACAD:3::1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
     
 # Часть 4. Настройка сервера DHCPv6 с сохранением состояния на R1
 
 В части 4 настраивается R1 для ответа на запросы DHCPv6 от локальной сети на R2.
 
 a.	Создайте пул DHCPv6 на R1 для сети 2001:db8:acad:3:aaa::/80. Это предоставит адреса локальной сети, подключенной к интерфейсу G0/0/1 на R2. В составе пула задайте DNS-сервер 2001:db8:acad: :254 и задайте доменное имя STATEFUL.com.
-
-Откройте окно конфигурации
 
 ```
 R1(config)# ipv6 dhcp pool R2-STATEFUL
@@ -250,15 +294,26 @@ R1(config-if)# ipv6 dhcp server R2-STATEFUL
 ### 1. Включите PC-B и проверьте адрес SLAAC, который он генерирует.
 
 ```
-C:\Users\Student> ipconfig /all
-Windows IP Configuration
+C:\>ipconfig /all
 
-   Host Name . . . . . . . . . . . . : DESKTOP-3FR7RKA
-   Primary Dns Suffix . . . . . . . : 
+FastEthernet0 Connection:(default port)
 
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 00D0.D334.4327
+   Link-local IPv6 Address.........: FE80::1
+   IPv6 Address....................: 2001:DB8:ACAD:3::1
+   Autoconfiguration IP Address....: 169.254.67.39
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-06-21-35-51-00-D0-D3-34-43-27
+   DNS Servers.....................: ::
+                                     0.0.0.0
 ```
 
-### Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
+Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
 
 ### 2. Настройте R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1.
 
@@ -267,7 +322,7 @@ a.	Настройте команду ipv6 dhcp relay на интерфейсе R
 Откройте окно конфигурации
 
 ```
-R2 (конфигурация) # интерфейс g0/0/1
+R2 (конфигурация) # interface g0/0/1
 R2(config-if)# ipv6 nd managed-config-flag
 R2(config-if)# ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0
 ```
