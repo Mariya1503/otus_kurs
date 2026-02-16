@@ -315,6 +315,9 @@ FastEthernet0 Connection:(default port)
 
 Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
 
+
+#### дальше выполнить не получилось
+
 ### 2. Настройте R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1.
 
 a.	Настройте команду ipv6 dhcp relay на интерфейсе R2 G0/0/1, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag .
@@ -322,7 +325,7 @@ a.	Настройте команду ipv6 dhcp relay на интерфейсе R
 Откройте окно конфигурации
 
 ```
-R2 (конфигурация) # interface g0/0/1
+R2(config) # interface g0/0/1
 R2(config-if)# ipv6 nd managed-config-flag
 R2(config-if)# ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0
 ```
