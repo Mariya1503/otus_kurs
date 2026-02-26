@@ -388,5 +388,7 @@ Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
 Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
 
 Ping statistics for 2001:DB8:ACAD:1::1:
-    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)
 ```
+
+Файл лабораторной работы Cisco PT [здесь](lab8.pkt).
