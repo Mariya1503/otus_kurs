@@ -107,7 +107,7 @@ Vlan1                      [administratively down/down]
 ```
 R2#sh ipv6 int br
 GigabitEthernet0/0/0       [up/up]
-    FE80::1
+    FE80::2
     2001:DB8:ACAD:2::2
 GigabitEthernet0/0/1       [up/up]
     FE80::1
@@ -115,7 +115,6 @@ GigabitEthernet0/0/1       [up/up]
 GigabitEthernet0/0/2       [administratively down/down]
     unassigned
 Vlan1                      [administratively down/down]
-    unassigned
 ```
 
 b.	Настройте маршрут по умолчанию на каждом маршрутизаторе, который указывает на IP-адрес G0/0/0 на другом маршрутизаторе.
@@ -194,9 +193,9 @@ b.	Обратите внимание, что основной DNS-суффикс
 a.	Создайте пул DHCP IPv6 на R1 с именем R1-STATELESS. В составе этого пула назначьте адрес DNS-сервера как 2001:db8:acad: :1, а имя домена — как stateless.com.
 
 ```
-R1(config)# ipv6 dhcp pool R1-STATELESS
-R1(config-dhcp)# dns-server 2001:db8:acad::254
-R1(config-dhcp)# domain-name STATELESS.com
+R1(config)#ipv6 dhcp pool R1-STATELESS
+R1(config-dhcpv6)#dns-server 2001:db8:acad::254
+R1(config-dhcpv6)#domain-name STATELESS.com
 ```
 
 b.	Настройте интерфейс G0/0/1 на R1, чтобы предоставить флаг конфигурации OTHER для локальной сети R1 и укажите только что созданный пул DHCP в качестве ресурса DHCP для этого интерфейса.
@@ -275,9 +274,9 @@ a.	Создайте пул DHCPv6 на R1 для сети 2001:db8:acad:3:aaa::/
 
 ```
 R1(config)# ipv6 dhcp pool R2-STATEFUL
-R1(config-dhcp)# address prefix 2001:db8:acad:3:aaa::/80
-R1(config-dhcp)# dns-server 2001:db8:acad::254
-R1(config-dhcp)# domain-name STATEFUL.com
+R1(config-dhcpv6)#address prefix 2001:db8:acad:3:aaa::/80
+R1(config-dhcpv6)#dns-server 2001:db8:acad::254
+R1(config-dhcpv6)#domain-name STATEFUL.com
 ```
 
 b.	Назначьте только что созданный пул DHCPv6 интерфейсу g0/0/0 на R1.
