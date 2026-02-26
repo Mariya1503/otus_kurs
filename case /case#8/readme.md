@@ -314,19 +314,21 @@ FastEthernet0 Connection:(default port)
 
 Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
 
-
-#### дальше выполнить не получилось
-
-### 2. Настройте R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1.
+### 2. Настройте R2 для предоставления DHCPv6 без состояния для PC-B.
 
 a.	Настройте команду ipv6 dhcp relay на интерфейсе R2 G0/0/1, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag .
 
 Откройте окно конфигурации
 
 ```
-R2(config) # interface g0/0/1
-R2(config-if)# ipv6 nd managed-config-flag
-R2(config-if)# ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0
+R2(config)#ipv6 dhcp pool R2-STATELESS
+R2(config-dhcpv6)#dns-server 2001:db8:acad::254
+R2(config-dhcpv6)#domain-name STATELESS.com
+R2(config-dhcpv6)#ex
+R2(config)#interface g0/0/1
+R2(config-if)#ipv6 nd other-config-flag
+R2(config-if)#ipv6 dhcp server R2-STATELESS
+
 ```
 
 b.	Сохраните конфигурацию.
@@ -338,7 +340,53 @@ a.	Перезапустите PC-B.
 b.	Откройте командную строку на PC-B и выполните команду ipconfig /all и проверьте выходные данные, чтобы увидеть результаты операции ретрансляции DHCPv6.
 
 ```
-C:\Users\Student> ipconfig /all
-Windows IP Configuration
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 0002.4A4B.E764
+   Link-local IPv6 Address.........: FE80::202:4AFF:FE4B:E764
+   IPv6 Address....................: 2001:DB8:ACAD:3:202:4AFF:FE4B:E764
+   Autoconfiguration IP Address....: 169.254.231.100
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 920517970
+   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
+   DNS Servers.....................: 2001:DB8:ACAD::254
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 000A.41BC.A147
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 920517970
+   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
 ```
-c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
+c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
+
+```
+C:\>ping 2001:db8:acad:1::1
+
+Pinging 2001:db8:acad:1::1 with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
+Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
+Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
+Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
+
+Ping statistics for 2001:DB8:ACAD:1::1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+```
