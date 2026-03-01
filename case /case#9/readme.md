@@ -168,6 +168,7 @@ b. Убедитесь, что неиспользуемые порты отклю
 
 S1# show interfaces status
 
+```
 Port Name Status Vlan Duplex Speed Type
 Fa0/1 Link to S2 connected trunk a-full a-100 10/100BaseTX
 Fa0/2 disabled 999 auto auto 10/100BaseTX
@@ -180,8 +181,11 @@ Fa0/8 disabled 999 auto auto 10/100BaseTX
 Fa0/9 disabled 999 auto auto 10/100BaseTX
 Fa0/10 disabled 999 auto auto 10/100BaseTX
 <output omitted>
+```
+
 S2# show interfaces status
 
+```
 Port Name Status Vlan Duplex Speed Type
 Fa0/1 Link to S1 connected trunk a-full a-100 10/100BaseTX
 Fa0/2 disabled 999 auto auto 10/100BaseTX
@@ -200,8 +204,9 @@ Fa0/23 disabled 999 auto auto 10/100BaseTX
 Fa0/24 disabled 999 auto auto 10/100BaseTX
 Gi0/1 disabled 999 auto auto 10/100/1000BaseTX
 Gi0/2 disabled 999 auto auto 10/100/1000BaseTX
+```
     
-# Часть 4. Документирование и реализация функций безопасности порта
+# 4. Документирование и реализация функций безопасности порта
 
 Интерфейсы F0/6 на S1 и F0/18 на S2 настроены как порты доступа. На этом шаге вы также настроите безопасность портов на этих двух портах доступа.
 
@@ -219,113 +224,150 @@ a. На S1, введите команду show port-security interface f0/6  д�
 | Sticky MAC Address    |   |
 
 
-# Часть 5. Настройка и проверка ретрансляции DHCPv6 на R2.
+b. На S1 включите защиту порта на F0 / 6 со следующими настройками:
+    
+    • Максимальное количество записей MAC-адресов: 3
+    
+    • Режим безопасности: restrict
+    
+    • Aging time: 60 мин.
+    
+    • Aging type: неактивный
 
-В части 5 необходимо настроить и проверить ретрансляцию DHCPv6 на R2, позволяя PC-B получать адрес IPv6.
-
-### 1. Включите PC-B и проверьте адрес SLAAC, который он генерирует.
-
-```
-C:\>ipconfig /all
-
-FastEthernet0 Connection:(default port)
-
-   Connection-specific DNS Suffix..: 
-   Physical Address................: 00D0.D334.4327
-   Link-local IPv6 Address.........: FE80::1
-   IPv6 Address....................: 2001:DB8:ACAD:3::1
-   Autoconfiguration IP Address....: 169.254.67.39
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-06-21-35-51-00-D0-D3-34-43-27
-   DNS Servers.....................: ::
-                                     0.0.0.0
-```
-
-Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
-
-### 2. Настройте R2 для предоставления DHCPv6 без состояния для PC-B.
-
-a.	Настройте команду ipv6 dhcp relay на интерфейсе R2 G0/0/1, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag .
-
-Откройте окно конфигурации
+c. Verify port security on S1 F0/6.
 
 ```
-R2(config)#ipv6 dhcp pool R2-STATELESS
-R2(config-dhcpv6)#dns-server 2001:db8:acad::254
-R2(config-dhcpv6)#domain-name STATELESS.com
-R2(config-dhcpv6)#ex
-R2(config)#interface g0/0/1
-R2(config-if)#ipv6 nd other-config-flag
-R2(config-if)#ipv6 dhcp server R2-STATELESS
-
+S1# show port-security interface f0/6
+Port Security : Enabled
+Port Status : Secure-up
+Violation Mode : Restrict
+Aging Time : 60 mins
+Aging Type : Inactivity
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses : 3
+Total MAC Addresses : 1
+Configured MAC Addresses : 0
+Sticky MAC Addresses : 0
+Last Source Address:Vlan : 0022.5646.3411:10
+Security Violation Count : 0
 ```
 
-b.	Сохраните конфигурацию.
-
-### 3. Попытка получить адрес IPv6 из DHCPv6 на PC-B.
-
-a.	Перезапустите PC-B.
-
-b.	Откройте командную строку на PC-B и выполните команду ipconfig /all и проверьте выходные данные, чтобы увидеть результаты операции ретрансляции DHCPv6.
-
 ```
-C:\>ipconfig /all
-
-FastEthernet0 Connection:(default port)
-
-   Connection-specific DNS Suffix..: STATELESS.com 
-   Physical Address................: 0002.4A4B.E764
-   Link-local IPv6 Address.........: FE80::202:4AFF:FE4B:E764
-   IPv6 Address....................: 2001:DB8:ACAD:3:202:4AFF:FE4B:E764
-   Autoconfiguration IP Address....: 169.254.231.100
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 920517970
-   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
-   DNS Servers.....................: 2001:DB8:ACAD::254
-                                     0.0.0.0
-
-Bluetooth Connection:
-
-   Connection-specific DNS Suffix..: STATELESS.com 
-   Physical Address................: 000A.41BC.A147
-   Link-local IPv6 Address.........: ::
-   IPv6 Address....................: ::
-   IPv4 Address....................: 0.0.0.0
-   Subnet Mask.....................: 0.0.0.0
-   Default Gateway.................: ::
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 920517970
-   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
-   DNS Servers.....................: ::
-                                     0.0.0.0
-
-```
-c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
-
-```
-C:\>ping 2001:db8:acad:1::1
-
-Pinging 2001:db8:acad:1::1 with 32 bytes of data:
-
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-
-Ping statistics for 2001:DB8:ACAD:1::1:
-    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)
+S1# show port-security address
+Secure Mac Address Table
+-----------------------------------------------------------------------------
+Vlan Mac Address Type Ports Remaining Age
+                                                                   (mins)
+---- ----------- ---- ----- -------------
+  10 0022.5646.3411 SecureDynamic Fa0/6 60 (I)
+-----------------------------------------------------------------------------
+Total Addresses in System (excluding one mac per port) : 0
+Max Addresses limit in System (excluding one mac per port) : 8192
 ```
 
-![](figure2.png)
+d. Включите безопасность порта для F0 / 18 на S2. Настройте каждый активный порт доступа таким образом, чтобы он автоматически добавлял адреса МАС, изученные на этом порту, в текущую конфигурацию.
 
-Файл лабораторной работы Cisco PT [здесь](lab8.pkt).
+e. Настройте следующие параметры безопасности порта на S2 F / 18:
+    
+    • Максимальное количество записей MAC-адресов: 2
+    
+    • Тип безопасности: Protect
+    
+    • Aging time: 60 мин.
+    
+f. Проверка функции безопасности портов на S2 F0/18.
+
+```
+S2# show port-security interface f0/18
+Port Security : Enabled
+Port Status : Secure-up
+Violation Mode : Protect
+Aging Time : 60 mins
+Aging Type : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses : 2
+Total MAC Addresses : 1
+Configured MAC Addresses : 0
+Sticky MAC Addresses : 0
+Last Source Address:Vlan : 0022.5646.3413:10
+Security Violation Count : 0
+```
+
+```
+S2# show port-security address
+               Secure Mac Address Table
+-----------------------------------------------------------------------------
+Vlan Mac Address Type Ports Remaining Age
+                                                                   (mins)
+---- ----------- ---- ----- -------------
+  10 0022.5646.3413 SecureSticky Fa0/18 -
+-----------------------------------------------------------------------------
+Total Addresses in System (excluding one mac per port) : 0
+Max Addresses limit in System (excluding one mac per port) : 8192
+```
+
+### 5. Реализовать безопасность DHCP snooping.
+
+a. На S2 включите DHCP snooping и настройте DHCP snooping во VLAN 10.
+
+b. Настройте магистральные порты на S2 как доверенные порты.
+
+c. Ограничьте ненадежный порт Fa0/18 на S2 пятью DHCP-пакетами в секунду.
+
+d. Проверка DHCP Snooping на S2.
+
+```
+S2# show ip dhcp snooping
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+10
+DHCP snooping is operational on following VLANs:
+10
+DHCP snooping is configured on the following L3 Interfaces:
+Insertion of option 82 is enabled
+   circuit-id default format: vlan-mod-port
+   remote-id: 0cd9.96d2.3f80 (MAC)
+Option 82 on untrusted port is not allowed
+Verification of hwaddr field is enabled
+Verification of giaddr field is enabled
+DHCP snooping trust/rate is configured on the following Interfaces:
+
+Interface Trusted Allow option Rate limit (pps)
+----------------------- ------- ------------ ----------------
+FastEthernet0/1 yes yes unlimited
+  Custom circuit-ids:
+FastEthernet0/18 no no 5
+  Custom circuit-ids:
+                e. В командной строке на PC-B освободите, а затем обновите IP-адрес.
+C:\Users\Student> ipconfig /release
+C:\Users\Student> ipconfig /renew
+                f. Проверьте привязку отслеживания DHCP с помощью команды show ip dhcp snooping binding.
+S2# show ip dhcp snooping binding 
+MacIp адресAddress Lease(sec) Type VLAN Interface
+------------------ --------------- ---------- ------------- ---- --------------------
+00:50:56:90:D0:8E 192.168.10.11 86213 dhcp-snooping 10 FastEthernet0/18
+Total number of bindings: 1
+            Шаг 6. Реализация PortFast и BPDU Guard
+                a. Настройте PortFast на всех портах доступа, которые используются на обоих коммутаторах.
+                b. Включите защиту BPDU на портах доступа VLAN 10 S1 и S2, подключенных к PC-A и PC-B.
+                c. Убедитесь, что защита BPDU и PortFast включены на соответствующих портах.
+S1# show spanning-tree interface f0/6 detail
+ Port 8 (FastEthernet0/6) of VLAN0010 is designated forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.6.
+   <output omitted for brevity>
+   Number of transitions to forwarding state: 1
+   The port is in the portfast mode
+   Link type is point-to-point by default
+   Bpdu guard is enabled
+   BPDU: sent 128, received 0
+            Шаг 7. Проверьте наличие сквозного ⁪подключения.
+Проверьте PING свзяь между всеми устройствами в таблице IP-адресации. В случае сбоя проверки связи может потребоваться отключить брандмауэр на хостах.
+Закройте окно настройки.
+       Вопросы для повторения
+        1. С точки зрения безопасности порта на S2, почему нет значения таймера для оставшегося возраста в минутах, когда было сконфигурировано динамическое обучение - sticky?
+        2. Что касается безопасности порта на S2, если вы загружаете скрипт текущей конфигурации на S2, почему порту 18 на PC-B никогда не получит IP-адрес через DHCP?
+        3. Что касается безопасности порта, в чем разница между типом абсолютного устаревания и типом устаревание по неактивности?
+
+Файл лабораторной работы Cisco PT [здесь](lab9.pkt).
 
 
