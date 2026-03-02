@@ -173,262 +173,67 @@ e. Проверьте состояние транка.
 
 ### Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?
 
-# Часть 2. Проверка назначения адреса SLAAC от R1
+# Часть 2. Настройка и проверка двух серверов DHCPv4 на R1
 
-В части 2 вы убедитесь, что узел PC-A получает адрес IPv6 с помощью метода SLAAC.
+В части 2 необходимо настроить и проверить сервер DHCPv4 на R1. Сервер DHCPv4 будет обслуживать две подсети, подсеть A и подсеть C.
 
-Включите PC-A и убедитесь, что сетевой адаптер настроен для автоматической настройки IPv6.
+### 1. Настройте R1 с пулами DHCPv4 для двух поддерживаемых подсетей. Ниже приведен только пул DHCP для подсети A
 
-Через несколько минут результаты команды ipconfig должны показать, что PC-A присвоил себе адрес из сети 2001:db8:1::/64.
+a. Исключите первые пять используемых адресов из каждого пула адресов.
 
-```
-C:\>ipconfig
-
-FastEthernet0 Connection:(default port)
+b. Создайте пул DHCP (используйте уникальное имя для каждого пула).
 
-   Connection-specific DNS Suffix..: 
-   Link-local IPv6 Address.........: FE80::200:CFF:FE75:7976
-   IPv6 Address....................: 2001:DB8:ACAD:1:200:CFF:FE75:7976
-   Autoconfiguration IPv4 Address..: 169.254.121.118
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-```
+c. Укажите сеть, поддерживающую этот DHCP-сервер.
 
-### Откуда взялась часть адреса с идентификатором хоста? *в зависимости от операционной системы. Либо хост генерирует адрес EUI-64 на основе MAC-адреса интерфейса, либо хост генерирует случайный 64-разрядный адрес*
+d. В качестве имени домена укажите CCNA-lab.com.
 
-# Часть 3. Настройка и проверка сервера DHCPv6 на R1
+e. Настройте соответствующий шлюз по умолчанию для каждого пула DHCP.
 
-### 1. Более подробно изучите конфигурацию PC-A.
+f. Настройте время аренды на 2 дня 12 часов и 30 минут.
 
-a.	Выполните команду ipconfig /all на PC-A и посмотрите на результат.
-
-```
-C:\>ipconfig /all
+g. Затем настройте второй пул DHCPv4, используя имя пула R2_Client_LAN и вычислите сеть, маршрутизатор по умолчанию, и используйте то же имя домена и время аренды, что и предыдущий пул DHCP.
 
-FastEthernet0 Connection:(default port)
+ ### 2. Сохраните конфигурацию.
 
-   Connection-specific DNS Suffix..: 
-   Physical Address................: 0030.A364.0607
-   Link-local IPv6 Address.........: FE80::230:A3FF:FE64:607
-   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE64:607
-   Autoconfiguration IP Address....: 169.254.6.7
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
-   DNS Servers.....................: ::
-                                     0.0.0.0
-```
-
-b.	Обратите внимание, что основной DNS-суффикс отсутствует. Также обратите внимание, что предоставленные адреса DNS-сервера являются адресами «локального сайта anycast», а не одноадресные адреса, как ожидалось.
+Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 
-### 2. Настройте R1 для предоставления DHCPv6 без состояния для PC-A.
+### 3. Проверка конфигурации сервера DHCPv4
 
-a.	Создайте пул DHCP IPv6 на R1 с именем R1-STATELESS. В составе этого пула назначьте адрес DNS-сервера как 2001:db8:acad: :1, а имя домена — как stateless.com.
+a. Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool
 
-```
-R1(config)#ipv6 dhcp pool R1-STATELESS
-R1(config-dhcpv6)#dns-server 2001:db8:acad::254
-R1(config-dhcpv6)#domain-name STATELESS.com
-```
+b. Выполните команду show ip dhcp bindings для проверки установленных назначений адресов DHCP.
 
-b.	Настройте интерфейс G0/0/1 на R1, чтобы предоставить флаг конфигурации OTHER для локальной сети R1 и укажите только что созданный пул DHCP в качестве ресурса DHCP для этого интерфейса.
+c. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
 
-```
-R1(config)# interface g0/0/1
-R1(config-if)# ipv6 nd other-config-flag 
-R1(config-if)# ipv6 dhcp server R1-STATELESS
-```
+### 4. Попытка получить IP-адрес от DHCP на PC-A
 
-c.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+a. Из командной строки компьютера PC-A выполните команду ipconfig /all.
 
-d.	Перезапустите PC-A.
-
-e.	Проверьте вывод ipconfig /all и обратите внимание на изменения.
-
-```
-C:\>ipconfig /all
+b. После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
 
-FastEthernet0 Connection:(default port)
+c. Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
 
-   Connection-specific DNS Suffix..: STATELESS.com
-   Physical Address................: 0030.A364.0607
-   Link-local IPv6 Address.........: FE80::230:A3FF:FE64:607
-   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE64:607
-   Autoconfiguration IP Address....: 169.254.6.7
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 1198766745
-   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
-   DNS Servers.....................: 2001:DB8:ACAD::254
-                                     0.0.0.0
+# Часть 3. Настройка и проверка DHCP-ретрансляции на R2
 
-Bluetooth Connection:
+В части 3 настраивается R2 для ретрансляции DHCP-запросов из локальной сети на интерфейсе G0/0/1 на DHCP-сервер (R1). 
 
-   Connection-specific DNS Suffix..: STATELESS.com 
-   Physical Address................: 0060.47C2.D438
-   Link-local IPv6 Address.........: ::
-   IPv6 Address....................: ::
-   IPv4 Address....................: 0.0.0.0
-   Subnet Mask.....................: 0.0.0.0
-   Default Gateway.................: ::
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 1198766745
-   DHCPv6 Client DUID..............: 00-01-00-01-35-70-BE-1D-00-30-A3-64-06-07
-   DNS Servers.....................: ::
-                                     0.0.0.0
-```
+### 1. Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1
 
-f.	Тестирование подключения с помощью пинга IP-адреса интерфейса G0/1 R2.
+a. Настройте команду ip helper-address на G0/0/1, указав IP-адрес G0/0/0 R1.
 
-```
-C:\>ping 2001:db8:acad:3::1
+b. Сохраните конфигурацию.
 
-Pinging 2001:db8:acad:3::1 with 32 bytes of data:
-
-Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
-Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
-Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
-Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
-
-Ping statistics for 2001:DB8:ACAD:3::1:
-    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-Approximate round trip times in milli-seconds:
-    Minimum = 0ms, Maximum = 0ms, Average = 0ms
-```
-    
-# Часть 4. Настройка сервера DHCPv6 с сохранением состояния на R1
-
-В части 4 настраивается R1 для ответа на запросы DHCPv6 от локальной сети на R2.
-
-a.	Создайте пул DHCPv6 на R1 для сети 2001:db8:acad:3:aaa::/80. Это предоставит адреса локальной сети, подключенной к интерфейсу G0/0/1 на R2. В составе пула задайте DNS-сервер 2001:db8:acad: :254 и задайте доменное имя STATEFUL.com.
-
-```
-R1(config)# ipv6 dhcp pool R2-STATEFUL
-R1(config-dhcpv6)#address prefix 2001:db8:acad:3:aaa::/80
-R1(config-dhcpv6)#dns-server 2001:db8:acad::254
-R1(config-dhcpv6)#domain-name STATEFUL.com
-```
-
-b.	Назначьте только что созданный пул DHCPv6 интерфейсу g0/0/0 на R1.
-
-```
-R1(config)# interface g0/0/0
-R1(config-if)# ipv6 dhcp server R2-STATEFUL
-```
-
-# Часть 5. Настройка и проверка ретрансляции DHCPv6 на R2.
-
-В части 5 необходимо настроить и проверить ретрансляцию DHCPv6 на R2, позволяя PC-B получать адрес IPv6.
-
-### 1. Включите PC-B и проверьте адрес SLAAC, который он генерирует.
-
-```
-C:\>ipconfig /all
-
-FastEthernet0 Connection:(default port)
-
-   Connection-specific DNS Suffix..: 
-   Physical Address................: 00D0.D334.4327
-   Link-local IPv6 Address.........: FE80::1
-   IPv6 Address....................: 2001:DB8:ACAD:3::1
-   Autoconfiguration IP Address....: 169.254.67.39
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-06-21-35-51-00-D0-D3-34-43-27
-   DNS Servers.....................: ::
-                                     0.0.0.0
-```
-
-Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
-
-### 2. Настройте R2 для предоставления DHCPv6 без состояния для PC-B.
-
-a.	Настройте команду ipv6 dhcp relay на интерфейсе R2 G0/0/1, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag .
-
-Откройте окно конфигурации
-
-```
-R2(config)#ipv6 dhcp pool R2-STATELESS
-R2(config-dhcpv6)#dns-server 2001:db8:acad::254
-R2(config-dhcpv6)#domain-name STATELESS.com
-R2(config-dhcpv6)#ex
-R2(config)#interface g0/0/1
-R2(config-if)#ipv6 nd other-config-flag
-R2(config-if)#ipv6 dhcp server R2-STATELESS
-
-```
-
-b.	Сохраните конфигурацию.
-
-### 3. Попытка получить адрес IPv6 из DHCPv6 на PC-B.
-
-a.	Перезапустите PC-B.
-
-b.	Откройте командную строку на PC-B и выполните команду ipconfig /all и проверьте выходные данные, чтобы увидеть результаты операции ретрансляции DHCPv6.
-
-```
-C:\>ipconfig /all
-
-FastEthernet0 Connection:(default port)
-
-   Connection-specific DNS Suffix..: STATELESS.com 
-   Physical Address................: 0002.4A4B.E764
-   Link-local IPv6 Address.........: FE80::202:4AFF:FE4B:E764
-   IPv6 Address....................: 2001:DB8:ACAD:3:202:4AFF:FE4B:E764
-   Autoconfiguration IP Address....: 169.254.231.100
-   Subnet Mask.....................: 255.255.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 920517970
-   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
-   DNS Servers.....................: 2001:DB8:ACAD::254
-                                     0.0.0.0
-
-Bluetooth Connection:
-
-   Connection-specific DNS Suffix..: STATELESS.com 
-   Physical Address................: 000A.41BC.A147
-   Link-local IPv6 Address.........: ::
-   IPv6 Address....................: ::
-   IPv4 Address....................: 0.0.0.0
-   Subnet Mask.....................: 0.0.0.0
-   Default Gateway.................: ::
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 920517970
-   DHCPv6 Client DUID..............: 00-01-00-01-D1-37-12-E3-00-02-4A-4B-E7-64
-   DNS Servers.....................: ::
-                                     0.0.0.0
-
-```
-c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
-
-```
-C:\>ping 2001:db8:acad:1::1
-
-Pinging 2001:db8:acad:1::1 with 32 bytes of data:
-
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-Reply from 2001:DB8:ACAD:3::1: Destination host unreachable.
-
-Ping statistics for 2001:DB8:ACAD:1::1:
-    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)
-```
-
-![](figure2.png)
+### 2. Попытка получить IP-адрес от DHCP на PC-B
+
+a. Из командной строки компьютера PC-B выполните команду ipconfig /all.
+
+b. После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
+
+c. Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
+
+d. Выполните show ip dhcp binding для R1 для проверки назначений адресов в DHCP.
+
+e. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
 
 Файл лабораторной работы Cisco PT [здесь](lab8.pkt).
 
