@@ -440,8 +440,47 @@ Bluetooth Connection:
 
 b. После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
 
+```
+C:\>ipconfig
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.6
+   Subnet Mask.....................: 255.255.255.192
+   Default Gateway.................: ::
+                                     192.168.1.1
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+```
 
 c. Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
+
+```
+C:\>ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 1ms, Average = 0ms
+```
 
 # Часть 3. Настройка и проверка DHCP-ретрансляции на R2
 
@@ -453,17 +492,98 @@ a. Настройте команду ip helper-address на G0/0/1, указав
 
 b. Сохраните конфигурацию.
 
+```
+R2# sh run | sec interface
+interface GigabitEthernet0/0/0
+ ip address 10.0.0.2 255.255.255.252
+ duplex auto
+ speed auto
+interface GigabitEthernet0/0/1
+ ip address 192.168.1.97 255.255.255.240
+#### ip helper-address 10.0.0.1
+ duplex auto
+ speed auto
+interface GigabitEthernet0/0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+interface Vlan1
+ no ip address
+ shutdown
+```
+
 ### 2. Попытка получить IP-адрес от DHCP на PC-B
 
 a. Из командной строки компьютера PC-B выполните команду ipconfig /all.
+
+```
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 0030.F267.D242
+   Link-local IPv6 Address.........: FE80::230:F2FF:FE67:D242
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.103
+   Subnet Mask.....................: 255.255.255.240
+   Default Gateway.................: ::
+                                     192.168.1.97
+   DHCP Servers....................: 10.0.0.1
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-7A-0D-12-16-00-30-F2-67-D2-42
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 00D0.BAC0.85B6
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-7A-0D-12-16-00-30-F2-67-D2-42
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
 
 b. После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
 
 c. Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
 
+```
+C:\>ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
 d. Выполните show ip dhcp binding для R1 для проверки назначений адресов в DHCP.
 
-e. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
+```
+R1#show ip dhcp binding
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.6      00D0.D336.2A1A           --                     Automatic
+192.168.1.103    0030.F267.D242           --                     Automatic
+```
+
+e. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP. - *команда не поддерживается CPT*
 
 Файл лабораторной работы Cisco PT [здесь](lab8_DHCP_IPv4.pkt).
 
