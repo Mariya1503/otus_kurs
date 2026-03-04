@@ -300,21 +300,103 @@ d. В качестве имени домена укажите CCNA-lab.com.
 
 e. Настройте соответствующий шлюз по умолчанию для каждого пула DHCP.
 
+```
+R1(config)#ip dhcp excluded-address 192.168.1.1 192.168.1.5
+R1(config)# ip dhcp excluded-address 192.168.1.97 192.168.1.102
+R1(config)#ip dhcp pool R1_Client_LAN
+R1(dhcp-config)#network 192.168.1.0 255.255.255.192
+R1(dhcp-config)#default-router 192.168.1.1
+R1(dhcp-config)#domain-name CCNA-lab.com
+```
+
 f. Настройте время аренды на 2 дня 12 часов и 30 минут.
+
+*не поддерживается CPT*
+
+```
+R1(dhcp-config)#lease 2 12 30
+                ^
+% Invalid input detected at '^' marker.
+
+R1(dhcp-config)#?
+  default-router  Default routers
+  dns-server      Set name server
+  domain-name     Domain name
+  exit            Exit from DHCP pool configuration mode
+  network         Network number and mask
+  no              Negate a command or set its defaults
+  option          Raw DHCP options
+```
 
 g. Затем настройте второй пул DHCPv4, используя имя пула R2_Client_LAN и вычислите сеть, маршрутизатор по умолчанию, и используйте то же имя домена и время аренды, что и предыдущий пул DHCP.
 
- ### 2. Сохраните конфигурацию.
+```
+R1(config)# ip dhcp pool R2_Client_LAN
+R1(dhcp-config)# network 192.168.1.96 255.255.255.240
+R1(dhcp-config)# default-router 192.168.1.97
+R1(dhcp-config)# domain-name CCNA-lab.com
+```
+
+### 2. Сохраните конфигурацию.
 
 Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+
+```
+R1#sh run | section dhcp
+ip dhcp excluded-address 192.168.1.1 192.168.1.5
+ip dhcp excluded-address 192.168.1.97 192.168.1.102
+ip dhcp pool R1_Client_LAN
+ network 192.168.1.0 255.255.255.192
+ default-router 192.168.1.1
+ domain-name CCNA-lab.com
+ip dhcp pool R2_Client_LAN
+ network 192.168.1.96 255.255.255.240
+ default-router 192.168.1.97
+ domain-name CCNA-lab.com
+```
 
 ### 3. Проверка конфигурации сервера DHCPv4
 
 a. Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool
 
-b. Выполните команду show ip dhcp bindings для проверки установленных назначений адресов DHCP.
+```
+R1#show ip dhcp pool
 
-c. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
+Pool R1_Client_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 1
+ Excluded addresses             : 2
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.1          192.168.1.1      - 192.168.1.62      1    / 2     / 62
+
+Pool R2_Client_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 14
+ Leased addresses               : 0
+ Excluded addresses             : 2
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.97         192.168.1.97     - 192.168.1.110     0    / 2     / 14
+```
+
+b. Выполните команду show ip dhcp binding для проверки установленных назначений адресов DHCP.
+
+```
+R1#show ip dhcp binding
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.6      00D0.D336.2A1A           --                     Automatic
+```
+
+c. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP. - *не поддерживается CPT*
 
 ### 4. Попытка получить IP-адрес от DHCP на PC-A
 
