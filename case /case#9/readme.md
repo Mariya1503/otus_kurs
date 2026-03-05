@@ -254,7 +254,19 @@ Negotiation of Trunking: Off
 
 a. На S1 настройте F0/5 и F0/6 в качестве портов доступа и свяжите их с VLAN 10.
 
+```
+S1(config)#int range f0/5,f0/6
+S1(config-if-range)#switchport mode access
+S1(config-if-range)#switchport access vlan 10
+```
+
 b. На S2 настройте порт доступа Fa0/18 и свяжите его с VLAN 10.
+
+```
+S2(config)#int f0/18
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 10
+```
 
 ### 3. Безопасность неиспользуемых портов коммутатора
 
