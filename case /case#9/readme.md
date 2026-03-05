@@ -200,48 +200,55 @@ a. Настройте все магистральные порты Fa0/1 на о
 
 b. Убедитесь, что режим транкинга успешно настроен на всех коммутаторах.
 
-*S1# show interface trunk*
+```
+S1#sh interface trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      333
+
+Port        Vlans allowed on trunk
+Fa0/1       1-1005
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1,10,333,999
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       10,999
+```
 
 ```
-Port Mode Encapsulation Status Native vlan
-Fa0/1 on 802.1q trunking 333
+S2#sh interface trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      333
 
-Port Vlans allowed on trunk
-Fa0/1 1-4094
+Port        Vlans allowed on trunk
+Fa0/1       1-1005
 
-Port Vlans allowed and active in management domain
-Fa0/1 1,10,333,999
+Port        Vlans allowed and active in management domain
+Fa0/1       1,10,333,999
 
-Port Vlans in spanning tree forwarding state and not pruned
-Fa0/1 1,10,333,999
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       1,10,333,999
 ```
 
-*S2# show interface trunk*
-
-```
-Port Mode Encapsulation Status Native vlan
-Fa0/1 on 802.1q trunking 333
-
-Port Vlans allowed on trunk
-Fa0/1 1-4094
-
-Port Vlans allowed and active in management domain
-Fa0/1 1,10,333,999
-
-Port Vlans in spanning tree forwarding state and not pruned
-Fa0/1 1,10,333,999
-```
 c. Отключить согласование DTP F0/1 на S1 и S2.
 
 d. Проверьте с помощью команды show interfaces.
 
-S1# show interfaces f0/1 switchport | include Negotiation
+```
+S1(config)#int fa0/1
+S1(config-if)#switchport nonegotiate
 
+S1#sh int f0/1 switchport | i Negotiation
 Negotiation of Trunking: Off
+```
 
-S1# show interfaces f0/1 switchport | include Negotiation
+```
+S2(config)#int fa0/1
+S2(config-if)#switchport nonegotiate
 
+S2#sh int f0/1 switchport | i Negotiation
 Negotiation of Trunking: Off
+```
 
 ### 2. Настройка портов доступа
 
