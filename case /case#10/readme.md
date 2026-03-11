@@ -44,6 +44,27 @@
 
 a. Настройте адреса интерфейсов на каждом маршрутизаторе, как показано в таблице адресации выше.
 
+```
+R1#sh ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0/0   unassigned      YES unset  administratively down down 
+GigabitEthernet0/0/1   10.53.0.1       YES manual up                    up 
+GigabitEthernet0/0/2   unassigned      YES unset  administratively down down 
+Loopback1              172.16.1.1      YES manual up                    up 
+Vlan1                  unassigned      YES unset  administratively down down
+```
+
+```
+R2#sh ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0/0   unassigned      YES unset  administratively down down 
+GigabitEthernet0/0/1   10.53.0.2       YES manual up                    up 
+GigabitEthernet0/0/2   unassigned      YES unset  administratively down down 
+Loopback1              192.168.1.1     YES manual up                    up 
+Vlan1                  unassigned      YES unset  administratively down down
+R2#
+```
+
 b. Перейдите в режим конфигурации маршрутизатора OSPF, используя идентификатор процесса 56.
 
 c. Настройте статический идентификатор маршрутизатора для каждого маршрутизатора (1.1.1.1 для R1, 2.2.2.2 для R2).
