@@ -71,17 +71,118 @@ c. Настройте статический идентификатор марш
 
 d. Настройте инструкцию сети для сети между R1 и R2, поместив ее в область 0.
 
+```
+R1(config)# router ospf 56
+R1(config-router)#router-id 1.1.1.1
+R1(config-router)# network 10.53.0.0 0.0.0.255 area 0
+```
+
 e. Только на R2 добавьте конфигурацию, необходимую для объявления сети Loopback 1 в область OSPF 0.
+
+```
+R2(config)# router ospf 56
+R2(config-router)# router-id 2.2.2.2
+R2(config-router)#network 10.53.0.0 0.0.0.255 area 0
+R2(config-router)#network 192.168.1.0 0.0.0.255 area 0
+```
 
 f. Убедитесь, что OSPFv2 работает между маршрутизаторами. Выполните команду, чтобы убедиться, что R1 и R2 сформировали смежность.
 
+Посмотрим интерфейсы участвующие в работе протокола OSPF
+
+Команда *sh ip ospf int brief* не поддерживается в версии CPT.
+
+```
+R1#sh ip ospf int g0/0/1
+
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State BDR, Priority 1
+  Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Backup Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:00
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Designated Router)
+  Suppress hello for 0 neighbor(s)
+```
+
+```
+R2#sh ip ospf int g0/0/1
+
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 10.53.0.2/24, Area 0
+  Process ID 56, Router ID 2.2.2.2, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State DR, Priority 1
+  Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Backup Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:05
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 1.1.1.1  (Backup Designated Router)
+  Suppress hello for 0 neighbor(s)
+
+R2#sh ip ospf int Loopback 1
+
+Loopback1 is up, line protocol is up
+  Internet address is 192.168.1.1/24, Area 0
+  Process ID 56, Router ID 2.2.2.2, Network Type LOOPBACK, Cost: 1
+  Loopback interface is treated as a stub Host
+```
+
+Посмотрим какие маршрутизаторы участвуют в обмене информации о маршрутизаторах и маршрутах в сети:
+
+``` 
+R1#sh ip ospf neighbor
+
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:30    10.53.0.2       GigabitEthernet0/0/1
+```
+
+```
+R2# sh ip ospf neighbor
+
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+1.1.1.1           1   FULL/BDR        00:00:38    10.53.0.1       GigabitEthernet0/0/1
+```
+
 ### Вопрос:
 
-### Какой маршрутизатор является DR? Какой маршрутизатор является BDR? Каковы критерии отбора?
+### Какой маршрутизатор является DR? - R2
+
+### Какой маршрутизатор является BDR? - R1
+
+### Каковы критерии отбора? - Выбор маршрутизатора R2 назначенным DR обусловлен тем, что у него значение идентификатора маршрутизатора (router-id) больше, чем у маршрутизатора R1.
 
 g. На R1 выполните команду show ip route ospf, чтобы убедиться, что сеть R2 Loopback1 присутствует в таблице маршрутизации. Обратите внимание, что поведение OSPF по умолчанию заключается в объявлении интерфейса обратной связи в качестве маршрута узла с использованием 32-битной маски.
 
-h. Запустите Ping до  адреса интерфейса R2 Loopback 1 из R1. Выполнение команды ping должно быть успешным.
+```
+R1#show ip route ospf
+     192.168.1.0/32 is subnetted, 1 subnets
+O       192.168.1.1 [110/2] via 10.53.0.2, 00:23:50, GigabitEthernet0/0/1
+```
+
+h. Запустите Ping до адреса интерфейса R2 Loopback 1 из R1. Выполнение команды ping должно быть успешным.
+
+```
+R1# ping 192.168.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/1/7 ms
+```
 
 # Часть 3. Оптимизация и проверка конфигурации OSPFv2 для одной области
 
