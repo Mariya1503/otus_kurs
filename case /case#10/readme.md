@@ -313,11 +313,22 @@ GigabitEthernet0/0/1 is up, line protocol is up
   Suppress hello for 0 neighbor(s)
 ```
 
+##### До изменения проверим пинги от R2
+
+```
+R2#ping 172.16.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/1/7 ms
+```
+
 Изменим базовую пропускную способность:
  
 ```
 R1(config)# router ospf 56
-R1(config-router)# auto-cost reference-bandwidth 10
+R1(config-router)# auto-cost reference-bandwidth 1
 ```
 Перезапустим процессы OSPF на маршрутизаторах, чтобы изменения вступили в силу:
 
