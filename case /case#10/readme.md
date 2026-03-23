@@ -416,4 +416,7 @@ Sending 5, 100-byte ICMP Echos to 172.16.1.1, timeout is 2 seconds:
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 0/1/8 ms
 ```
+#### Файл лабораторной работы Cisco PT [здесь](lab10.pkt).
+
+#### Файлы конфигурации [здесь](result_R1.txt) и [здесь](result_R2.txt)
 
