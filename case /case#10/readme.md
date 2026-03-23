@@ -326,26 +326,48 @@ Suppress hello for 0 neighbor(s)
 Проверим итоговое состояние по таблицам маршрутизации
 
 ```
-R1#sh ip route
+R1# sh ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
-D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
-N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
-i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
-* - candidate default, U - per-user static route, o - ODR
-P - periodic downloaded static route
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
 
 Gateway of last resort is 0.0.0.0 to network 0.0.0.0
 
-10.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
-C 10.53.0.0/24 is directly connected, GigabitEthernet0/0/1
-L 10.53.0.1/32 is directly connected, GigabitEthernet0/0/1
-172.16.0.0/16 is variably subnetted, 2 subnets, 2 masks
-C 172.16.1.0/24 is directly connected, Loopback1
-L 172.16.1.1/32 is directly connected, Loopback1
-O 192.168.1.0/24 [110/101] via 10.53.0.2, 00:01:28, GigabitEthernet0/0/1
-S* 0.0.0.0/0 is directly connected, Loopback1
+     10.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C       10.53.0.0/24 is directly connected, GigabitEthernet0/0/1
+L       10.53.0.1/32 is directly connected, GigabitEthernet0/0/1
+     172.16.0.0/16 is variably subnetted, 2 subnets, 2 masks
+C       172.16.1.0/24 is directly connected, Loopback1
+L       172.16.1.1/32 is directly connected, Loopback1
+O    192.168.1.0/24 [110/101] via 10.53.0.2, 00:18:57, GigabitEthernet0/0/1
+S*   0.0.0.0/0 is directly connected, Loopback1
 ```
+
+```
+R2#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is 10.53.0.1 to network 0.0.0.0
+
+     10.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C       10.53.0.0/24 is directly connected, GigabitEthernet0/0/1
+L       10.53.0.2/32 is directly connected, GigabitEthernet0/0/1
+     192.168.1.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.1.0/24 is directly connected, Loopback1
+L       192.168.1.1/32 is directly connected, Loopback1
+O*E2 0.0.0.0/0 [110/1] via 10.53.0.1, 00:19:42, GigabitEthernet0/0/1
+```
+
 
 ### 2. Убедитесь, что оптимизация OSPFv2 реализовалась.
 
@@ -379,6 +401,11 @@ O 192.168.1.0 [110/101] via 10.53.0.2, 00:06:09, GigabitEthernet0/0/1
 
 c. Введите команду show ip route ospf на маршрутизаторе R2. Единственная информация о маршруте OSPF должна быть распространяемый по умолчанию маршрут R1.
 
+```
+R2#show ip route ospf
+O*E2 0.0.0.0/0 [110/1] via 10.53.0.1, 00:20:54, GigabitEthernet0/0/1
+```
+
 d. Запустите Ping до адреса интерфейса R1 Loopback 1 из R2. Выполнение команды ping должно быть успешным.
 
 ```
@@ -389,9 +416,4 @@ Sending 5, 100-byte ICMP Echos to 172.16.1.1, timeout is 2 seconds:
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 0/1/8 ms
 ```
-
-### Вопрос:
-
-### Почему стоимость OSPF для маршрута по умолчанию отличается от стоимости OSPF в R1 для сети 192.168.1.0/24?
-
 
