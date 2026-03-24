@@ -374,22 +374,43 @@ O*E2 0.0.0.0/0 [110/1] via 10.53.0.1, 00:19:42, GigabitEthernet0/0/1
 a. Выполните команду show ip ospf interface g0/0/1 на R1
 
 ```
-R1#show ip ospf interface g0/0/1
+R1#sh ip ospf int gi0/0/1
 
 GigabitEthernet0/0/1 is up, line protocol is up
-Internet address is 10.53.0.1/24, Area 0
-Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 100
-Transmit Delay is 1 sec, State DR, Priority 50
-Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
-No backup designated router on this network
-Timer intervals configured, Hello 30, Dead 40, Wait 40, Retransmit 5
-Hello due in 00:00:02
-Index 1/1, flood queue length 0
-Next 0x0(0)/0x0(0)
-Last flood scan length is 1, maximum is 1
-Last flood scan time is 0 msec, maximum is 0 msec
-Neighbor Count is 0, Adjacent neighbor count is 0
-Suppress hello for 0 neighbor(s)
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 100
+  Transmit Delay is 1 sec, State DR, Priority 50
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Backup Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Timer intervals configured, Hello 30, Dead 120, Wait 120, Retransmit 5
+    Hello due in 00:00:19
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)
+  Suppress hello for 0 neighbor(s
+```
+
+```
+R2# sh ip ospf int gi0/0/1
+
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 10.53.0.2/24, Area 0
+  Process ID 56, Router ID 2.2.2.2, Network Type BROADCAST, Cost: 100
+  Transmit Delay is 1 sec, State BDR, Priority 1
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Backup Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Timer intervals configured, Hello 30, Dead 120, Wait 120, Retransmit 5
+    Hello due in 00:00:05
+  Index 2/2, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 1.1.1.1  (Designated Router)
+  Suppress hello for 0 neighbor(s)
 ```
 
 b. На R1 выполните команду show ip route ospf, чтобы убедиться, что сеть R2 Loopback1 присутствует в таблице маршрутизации.
