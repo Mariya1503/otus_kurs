@@ -1,7 +1,8 @@
+
 R1# sh run
 Building configuration...
 
-Current configuration : 1201 bytes
+Current configuration : 1228 bytes
 !
 version 15.4
 no service timestamps log datetime msec
@@ -53,6 +54,7 @@ interface GigabitEthernet0/0/0
 interface GigabitEthernet0/0/1
  ip address 10.53.0.1 255.255.255.0
  ip ospf hello-interval 30
+ ip ospf dead-interval 120
  ip ospf priority 50
  duplex auto
  speed auto
