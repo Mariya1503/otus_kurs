@@ -335,13 +335,86 @@ R1(config)# ip ?
 | PC-B |	SSH	| 10.20.0.1 |
 | PC-B |	SSH	| 172.16.1.1 |
 
-#  *<details><summary> Все проверки пройдены. Настройка макета проведена успешно.</summary>*
-#  *<p>*
+<details><summary> Все проверки пройдены. Настройка макета проведена успешно.</summary>
+<p>
 
-# ```
-# ...
+```
+C:\> ping 10.40.0.10
 
-# ```
+Pinging 10.40.0.10 with 32 bytes of data:
+
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.40.0.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+...
+
+```
+C:\> ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+```
+C:\>ping 10.30.0.10
+
+Pinging 10.30.0.10 with 32 bytes of data:
+
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.30.0.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+```
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time=7ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 7ms, Average = 1ms
+```
+```
+C:\>ping 172.16.1.1
+
+Pinging 172.16.1.1 with 32 bytes of data:
+
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 172.16.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
 
 
 # Часть 7. Настройка и проверка списков контроля доступа (ACL)
