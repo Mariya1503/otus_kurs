@@ -129,12 +129,35 @@ c.	В качестве другой части конфигурации тран
 
 d.	Выполните команду show interfaces trunk для проверки портов магистрали, собственной VLAN и разрешенных VLAN через магистраль.
 
+```
+S1(config)#do sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
 
-### ```
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
 
-### ....
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
 
-### ```
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+```
+
+```
+S2#sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
+
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
+
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+```
 
 ### 2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
 
@@ -144,12 +167,24 @@ b.	Сохраните текущую конфигурацию в файл заг
 
 c.	Используйте команду show interfaces trunk для проверки настроек транка.
 
+ ```
+S1(config)#do sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
+Fa0/5       on           802.1q         trunking      1000
 
-### ```
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
+Fa0/5       20,30,40,1000
 
-### ....
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
+Fa0/5       20,30,40,1000
 
-### ```
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+Fa0/5       none
+```
 
 # Часть 4. Настройте маршрутизацию.
 
