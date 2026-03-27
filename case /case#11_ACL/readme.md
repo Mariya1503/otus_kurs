@@ -412,6 +412,28 @@ Ping statistics for 172.16.1.1:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+
+C:\>ssh -l ?
+Invalid Command.
+
+C:\>ssh -l SSHadmin 10.20.0.1
+
+Password: 
+
+ Unauthorized access is strictly prohibited 
+
+R1#
+
+
+C:\>ssh -l SSHadmin 172.16.1.1
+
+Password: 
+
+ Unauthorized access is strictly prohibited 
+
+R1#
+
 ```
 </p>
 </details>
