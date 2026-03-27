@@ -251,6 +251,27 @@ c.	Генерируйте криптоключи с помощью 1024 битн
 
 d.	Настройте первые пять линий VTY на каждом устройстве, чтобы поддерживать только SSH-соединения и с локальной аутентификацией.
 
+```
+S1(config)#ip domain-name ccna-lab.com
+S1(config)#crypto key generate rsa
+       The name for the keys will be: S1.otus.ru
+       Choose the size of the key modulus in the range of 360 to 2048 for your
+       General Purpose Keys. Choosing a key modulus greater than 512 may take
+       a few minutes.
+       
+       How many bits in the modulus [512]: 1024
+       % Generating 2048 bit RSA keys, keys will be non-exportable...[OK]
+       
+S1(config)#ip ssh version 2
+
+S1(config)#username SSHadmin privilege 15 secret $cisco123!
+       
+S1(config)#line vty 0 4
+       
+S1(config-line)#transport input ssh
+S1(config-line)#login local
+```
+
 ### 2. Включите защищенные веб-службы с проверкой подлинности на R1.
 
 a.	Включите сервер HTTPS на R1.
