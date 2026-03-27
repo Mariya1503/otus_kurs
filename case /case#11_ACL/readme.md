@@ -251,6 +251,7 @@ c.	Генерируйте криптоключи с помощью 1024 битн
 
 d.	Настройте первые пять линий VTY на каждом устройстве, чтобы поддерживать только SSH-соединения и с локальной аутентификацией.
 
+Пример для S1
 ```
 S1(config)#ip domain-name ccna-lab.com
 S1(config)#crypto key generate rsa
@@ -274,13 +275,43 @@ S1(config-line)#login local
 
 ### 2. Включите защищенные веб-службы с проверкой подлинности на R1.
 
-a.	Включите сервер HTTPS на R1.
+### a.	Включите сервер HTTPS на R1.
 
-*R1(config)# ip http secure-server*
+### *R1(config)# ip http secure-server*
 
-b.	Настройте R1 для проверки подлинности пользователей, пытающихся подключиться к веб-серверу.
+### b.	Настройте R1 для проверки подлинности пользователей, пытающихся подключиться к веб-серверу.
 
-*R1(config)# ip http authentication local*
+### *R1(config)# ip http authentication local*
+
+Нет возможности выполнить данный пункт, в версии CPT нет команды.
+
+```
+R1(config)#ip http ?
+% Unrecognized command
+R1(config)# ip ?
+  access-list       Named access-list
+  cef               Cisco Express Forwarding
+  default-gateway   Specify default gateway (if not routing IP)
+  default-network   Flags networks as candidates for default routes
+  dhcp              Configure DHCP server and relay parameters
+  domain            IP DNS Resolver
+  domain-lookup     Enable IP Domain Name System hostname translation
+  domain-name       Define the default domain name
+  flow-export       Specify host/port to send flow statistics
+  forward-protocol  Controls forwarding of physical and directed IP broadcasts
+  ftp               FTP configuration commands
+  host              Add an entry to the ip hostname table
+  inspect           Context-based Access Control Engine
+  ips               Intrusion Prevention System
+  local             Specify local options
+  name-server       Specify address of name server to use
+  nat               NAT configuration commands
+  route             Establish static routes
+  routing           Enable IP routing
+  scp               Scp commands
+  ssh               Configure ssh options
+  tcp               Global TCP parameters
+```
 
 # Часть 6. Проверка подключения.
 
