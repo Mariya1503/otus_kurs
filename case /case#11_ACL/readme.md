@@ -352,9 +352,8 @@ Ping statistics for 10.40.0.10:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
-...
 
-```
+
 C:\> ping 10.20.0.1
 
 Pinging 10.20.0.1 with 32 bytes of data:
@@ -368,8 +367,8 @@ Ping statistics for 10.20.0.1:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
-```
-```
+
+
 C:\>ping 10.30.0.10
 
 Pinging 10.30.0.10 with 32 bytes of data:
@@ -383,8 +382,8 @@ Ping statistics for 10.30.0.10:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
-```
-```
+
+
 C:\>ping 10.20.0.1
 
 Pinging 10.20.0.1 with 32 bytes of data:
@@ -398,8 +397,8 @@ Ping statistics for 10.20.0.1:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 7ms, Average = 1ms
-```
-```
+
+
 C:\>ping 172.16.1.1
 
 Pinging 172.16.1.1 with 32 bytes of data:
@@ -414,7 +413,8 @@ Ping statistics for 172.16.1.1:
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
-
+</p>
+</details>
 
 
 # Часть 7. Настройка и проверка списков контроля доступа (ACL)
