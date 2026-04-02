@@ -443,9 +443,7 @@ R1#
 
 При проверке базового подключения компания требует реализации следующих политик безопасности:
 
-### Политика1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен).
-
-
+Политика1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен).
 
 Политика 2. Сеть Sales не имеет доступа к IP-адресам в сети Management с помощью любого веб-протокола (HTTP/HTTPS). Сеть Sales также не имеет доступа к интерфейсам R1 с помощью любого веб-протокола. Разрешён весь другой веб-трафик (обратите внимание — Сеть Sales  может получить доступ к интерфейсу Loopback 1 на R1).
 
@@ -456,6 +454,8 @@ R1#
 ### 1. Проанализируйте требования к сети и политике безопасности для планирования реализации ACL.
  
 ### 2. Разработка и применение расширенных списков доступа, которые будут соответствовать требованиям политики безопасности.
+
+Файл конфигурации для ACL [здесь](config_ACL.txt) 
 
 ### 3. Убедитесь, что политики безопасности применяются развернутыми списками доступа.
 
@@ -473,4 +473,91 @@ R1#
 | PC-B |	SSH	| 10.20.0.1 | Сбой |
 | PC-B |	SSH	| 172.16.1.1 | Успех |
 
-Файл лабораторной работы Cisco PT [здесь](lab11.pkt).
+<details><summary> Все проверки пройдены, кроме HTTPS </summary>
+<p>
+
+```
+C:\>ping 10.40.0.10
+
+Pinging 10.40.0.10 with 32 bytes of data:
+
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+
+Ping statistics for 10.40.0.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping 10.30.0.10
+
+Pinging 10.30.0.10 with 32 bytes of data:
+
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+
+Ping statistics for 10.30.0.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 172.16.1.1
+
+Pinging 172.16.1.1 with 32 bytes of data:
+
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 172.16.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ssh -l SSHadmin 10.20.0.4
+
+% Connection timed out; remote host not responding
+C:\>
+C:\>
+C:\>ssh -l SSHadmin 172.16.1.1
+
+Password: 
+
+ Unauthorized access is strictly prohibited 
+
+R1#
+
+```
+</p>
+</details>
+
+
+Файл лабораторной работы Cisco PT [здесь](lab11_v1.pkt).
