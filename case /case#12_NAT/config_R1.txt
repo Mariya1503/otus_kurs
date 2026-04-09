@@ -1,7 +1,7 @@
 R1#sh run
 Building configuration...
 
-Current configuration : 918 bytes
+Current configuration : 960 bytes
 !
 version 16.6.4
 no service timestamps log datetime msec
@@ -62,6 +62,7 @@ interface Vlan1
  shutdown
 !
 ip classless
+ip route 0.0.0.0 0.0.0.0 209.165.200.225 
 !
 ip flow-export version 9
 !
