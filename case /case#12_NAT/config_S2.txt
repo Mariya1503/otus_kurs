@@ -1,7 +1,7 @@
 S2#sh run
 Building configuration...
 
-Current configuration : 1561 bytes
+Current configuration : 1632 bytes
 !
 version 15.0
 no service timestamps log datetime msec
@@ -22,6 +22,7 @@ spanning-tree mode pvst
 spanning-tree extend system-id
 !
 interface FastEthernet0/1
+ switchport mode access
 !
 interface FastEthernet0/2
  shutdown
@@ -72,6 +73,7 @@ interface FastEthernet0/17
  shutdown
 !
 interface FastEthernet0/18
+ switchport mode access
 !
 interface FastEthernet0/19
  shutdown
@@ -98,8 +100,9 @@ interface GigabitEthernet0/2
  shutdown
 !
 interface Vlan1
- ip address 192.168.1.11 255.255.255.0
- shutdown
+ ip address 192.168.1.12 255.255.255.0
+!
+ip default-gateway 192.168.1.1
 !
 banner motd ^C Unauthorized access is strictly prohibited ^C
 !
