@@ -53,12 +53,12 @@
 
 |Устройство |	Интерфейс	|IP‑адрес / Сеть	| Назначение
 |:----------|:----------|:------------|:----------|
-|Router_Office|	Fa0/0	|172.16.1.1/24|	Локальная сеть офиса|
-|Router_Office|	Tunnel0 |	10.0.0.2/24	|GRE‑туннель к базе|
-|Router_Base |	Fa0/0.10 (VLAN 10)	| 192.168.10.1/24 |	Управление, серверы|
-|- |	Fa0/0.20 (VLAN 20)	| 192.168.20.1/24	Геологи, датчики|
-|- |	Fa0/0.30 (VLAN 30)	|192.168.30.1/24	Гостевая сеть|
-|- |	Fa0/1	|— (источник туннеля)	|Подключение к спутнику|
+|Router_Office|	Gi0/0	|172.16.1.1/24|	Локальная сеть офиса|
+| - |	Tunnel0 |	10.0.0.2/24	|GRE‑туннель к базе|
+|Router_Base |	Gi0/0.10 (VLAN 10)	| 192.168.10.1/24 |	Управление, серверы|
+|- |	Gi0/0.20 (VLAN 20)	| 192.168.20.1/24	Геологи, датчики|
+|- |	Gi0/0.30 (VLAN 30)	|192.168.30.1/24	Гостевая сеть|
+|- |	Gi0/1	|— (источник туннеля)	|Подключение к спутнику|
 |- |	Tunnel0	|10.0.0.1/24|	GRE‑туннель к офису|
 |Server_Data	|NIC|	DHCP (из пула 192.168.10.0/24)	|Хранение данных разведки|
 |PC_Geology1|	NIC|	DHCP (из пула 192.168.20.0/24)	|Работа геологов|
@@ -74,44 +74,40 @@
 |Fa0/1–2	|20 (Geology)	|Рабочие станции геологов|
 |Fa0/3	|10 (Management)	|Сервер данных|
 |Fa0/4	|30 (Guest)|	Гостевые устройства|
-|Fa0/24	|Trunk (10,20,30)	|Соединение с Router_Base|
+|Fa0/24	|Trunk (10,20,30,1000)	|Соединение с Router_Base|
 
 
 ## Создание сети и настройка параметров устройств
 
-1.Добавьте устройства:
+1.Добавим и подключим устройства согласно схеме:
 
-•Перетащите в рабочую область:
+![](figure1.png)
 
-•2 маршрутизатора (Cisco 1941) → назовите Router_Office, Router_Base.
+2.Выполним базовую конфигурацию для Router_Office, Router_Base и Switch_Base:
 
-•Коммутатор (Cisco 2960) → Switch_Base.
+Пример для Router_Office (для Router_Base и Switch_Base аналогично):
 
-•3 ПК → PC_Geology1, PC_Geology2, PC_Guest.
+Router> enable
 
-•2 сервера → Server_Data, Server_Central.
+conf t
+no ip domain-lookup
+hostname R_Office
 
-2.Соедините устройства:
+enable secret class
+line console 0
+password cisco
+exit
+line vty 0 15
+password cisco
+exit
+service password-encryption
+banner motd 7 Authorized users only!!!! 7
+line console 0
+logging synchronous
+exit
 
-•Соедините Router_Office Fa0/0 с Router_Base Fa0/1 (используйте медный прямой кабель).
-
-•Соедините Router_Base Fa0/0 с Switch_Base Fa0/24 (медный прямой кабель).
-
-•Подключите:
-
-•Server_Data → Switch_Base Fa0/3.
-
-•PC_Geology1 → Switch_Base Fa0/1.
-
-•PC_Geology2 → Switch_Base Fa0/2.
-
-•PC_Guest → Switch_Base Fa0/4.
-
-•Server_Central → свободный порт Router_Office.
 
 3.Настройте VLAN на Switch_Base:
-
-•Перейдите в CLI коммутатора и выполните команды из предыдущего ответа (создание VLAN 10, 20, 30 и назначение портов).
 
 4.Настройте Router_Base:
 
