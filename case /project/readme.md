@@ -199,9 +199,10 @@ exit
 
 ```
 interface Tunnel0
-ip address 10.0.0.1 255.255.255.0
-tunnel source gi0/1
-tunnel destination 10.0.0.2
+ ip address 10.0.0.1 255.255.255.0
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 1.1.1.1
 exit
 ```
 
@@ -242,9 +243,10 @@ exit
 
 ```
 interface Tunnel0
-ip address 10.0.0.2 255.255.255.0
-tunnel source gi0/1
-tunnel destination 10.0.0.1
+ ip address 10.0.0.2 255.255.255.0
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 1.1.1.2
 exit
 ```
 
@@ -311,6 +313,22 @@ DNS Servers.....................: ::
 
 •Выполните ping между PC_Geology1 и Server_Central.
 
+```
+C:\>ping 172.16.1.10
+
+Pinging 172.16.1.10 with 32 bytes of data:
+
+Reply from 172.16.1.10: bytes=32 time<1ms TTL=126
+Reply from 172.16.1.10: bytes=32 time<1ms TTL=126
+Reply from 172.16.1.10: bytes=32 time<1ms TTL=126
+Reply from 172.16.1.10: bytes=32 time<1ms TTL=126
+
+Ping statistics for 172.16.1.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
 ## Выводы и результаты
 
 Эта схема полностью соответствует требованиям проекта:
@@ -323,4 +341,4 @@ DNS Servers.....................: ::
 
 •обеспечивает связь между удалённой базой и центральным офисом.
 
-Файл лабораторной работы Cisco PT [здесь](lab11_v1.pkt).
+Файл лабораторной работы Cisco PT [здесь](project.pkt).
