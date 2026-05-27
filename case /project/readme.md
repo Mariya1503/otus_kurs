@@ -2,10 +2,10 @@
 
 # Тема: Спутниково-проводная сеть для удалённых геологических баз
 
-##  Спутниково-проводная сеть для удалённых геологических баз — это гибридная система связи, которая объединяет спутниковые технологии (например, VSAT) с проводными каналами для обеспечения надёжного доступа к данным и управления в труднодоступных регионах.
+###  Спутниково-проводная сеть для удалённых геологических баз — это гибридная система связи, которая объединяет спутниковые технологии (например, VSAT) с проводными каналами для обеспечения надёжного доступа к данным и управления в труднодоступных регионах.
 
 
-##  Схема сети: спутниково‑проводная сеть для удалённой геологической базы
+###  Схема сети: спутниково‑проводная сеть для удалённой геологической базы
 
 ![](figure1.png)
 
@@ -41,13 +41,7 @@
     
     • Router‑on‑a‑Stick: маршрутизация между VLAN через под‑интерфейсы на Router_Base.
 
-	• ACL:
-	
-			1) изолировать гостевую сеть (VLAN 30) от рабочих сегментов (VLAN 10, 20);
-	
-			2) ограничить доступ к серверу данных (Server_Data) только для геологов (VLAN 20);
-			
-			3) защитить маршрутизаторы от несанкционированных подключений
+	• SSH - защищённое удалённое управление
 
 ## Логическая топология и ip-адресация
 
@@ -79,11 +73,11 @@
 
 ## Создание сети и настройка параметров устройств
 
-1.Добавим и подключим устройства согласно схеме:
+1. Добавим и подключим устройства согласно схеме:
 
 ![](figure1.png)
 
-2.Выполним базовую конфигурацию для Router_Office, Router_Base и Switch_Base:
+2. Выполним базовую конфигурацию для Router_Office, Router_Base и Switch_Base:
 
 Пример для Router_Office (для Router_Base и Switch_Base аналогично):
 
@@ -108,7 +102,7 @@ logging synchronous
 exit
 ```
 
-3.Настройте VLAN на Switch_Base:
+3. Настроим VLAN на Switch_Base:
 
 ```
 ! Создание VLAN
@@ -157,7 +151,7 @@ switchport trunk allowed vlan 10,20,30,1000
 exit
 ```
 
-4.Настройте Router_Base:
+4. Настроим Router_Base:
 
 •Создайте под интерфейсы для VLAN (Gi0/0.10, Gi0/0.20, Gi0/0.30) с инкапсуляцией dot1Q.
 
@@ -228,7 +222,7 @@ dns-server 8.8.4.4
 exit
 ```
 
-5.Настройте Router_Office:
+5. Настроим Router_Office:
 
 •Назначьте IP 172.16.1.1 на Fa0/0.
 
@@ -248,6 +242,48 @@ interface Tunnel0
  tunnel source GigabitEthernet0/1
  tunnel destination 1.1.1.2
 exit
+```
+
+6. Настроим SSH
+
+•Config для R_Base
+
+```
+ip domain-name gold-plus.com
+crypto key generate rsa
+The name for the keys will be: R_Base.gold-plus.com
+Choose the size of the key modulus in the range of 360 to 2048 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 2048
+% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]
+
+username admin privilege 15 secre P@55w0rd!
+*Mar 1 0:27:45.334: %SSH-5-ENABLED: SSH 1.99 has been enabled
+line vty 0 4
+transport input ssh
+login local
+```
+
+•Config для R_Office
+
+```
+ip domain-name gold-plus.com
+crypto key generate rsa
+The name for the keys will be: R_Base.gold-plus.com
+Choose the size of the key modulus in the range of 360 to 2048 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 2048
+% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]
+
+username admin privilege 15 secre 0r@ngeP@55
+*Mar 1 0:27:45.334: %SSH-5-ENABLED: SSH 1.99 has been enabled
+line vty 0 4
+transport input ssh
+login local
 ```
 
 ## Проверка конфигурации
@@ -327,6 +363,29 @@ Ping statistics for 172.16.1.10:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+```
+
+•Проверка с Geology_1
+
+```
+C:\>ssh -l admin 10.0.0.2
+
+Password: 
+
+Authorized users only!!!! 
+
+R_Office#
+```
+
+```
+C:\>ssh -l admin 192.168.20.1
+
+Password: 
+
+Authorized users only!!!! 
+
+R_Base#
 ```
 
 ## Выводы и результаты
